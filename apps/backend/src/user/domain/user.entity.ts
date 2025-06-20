@@ -42,7 +42,7 @@ export class User {
       : new PasswordHash('');
 
     return new User({
-      id: Uuid.create(),
+      id: new Uuid(),
       email: params.email,
       passwordHash,
       createdAt: new Date(),

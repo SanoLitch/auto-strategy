@@ -1,8 +1,8 @@
 import {
   WebSocketGateway, WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
 import { GameSessionDto } from './game-session.dto';
+import { Server } from 'socket.io';
 
 /**
  * WebSocket Gateway для игровой сессии.
@@ -13,7 +13,7 @@ import { GameSessionDto } from './game-session.dto';
 })
 export class GameSessionGateway {
   @WebSocketServer()
-  public server!: Server;
+  server: Server;
 
   /**
    * Отправить обновление состояния игровой сессии всем клиентам в комнате (gameId).

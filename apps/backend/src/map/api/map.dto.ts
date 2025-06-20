@@ -1,5 +1,13 @@
+import {
+  MapSize, TerrainType, SpawnPoint,
+} from '../domain/map.entity';
+
 /**
- * DTO для карты.
- * TODO: Добавить поля для создания/обновления карты.
+ * DTO для карты (ответ API).
  */
-export class MapDto {}
+export interface MapDto {
+  id: string;
+  size: MapSize;
+  terrainData: TerrainType[][];
+  spawnPoints: SpawnPoint[];
+}

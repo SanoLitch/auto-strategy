@@ -3,7 +3,10 @@
  * Реализует бизнес-логику создания и обновления сессии согласно аналитике.
  */
 import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import {
+  EventEmitter2, OnEvent,
+} from '@nestjs/event-emitter';
+import { Uuid } from '@libs/domain-primitives';
 import {
   GameSession, GameSessionStatus,
 } from './game-session.entity';
@@ -38,6 +41,7 @@ export class GameSessionService {
 
     // Отправить событие генерации карты (заглушка)
     this.eventEmitter.emit('map.generate', { sessionId: sessionDb.id });
+
     return GameSessionMapper.toDto(GameSessionMapper.toEntity(sessionDb));
   }
 
@@ -47,6 +51,7 @@ export class GameSessionService {
    * @param mapId string
    * @returns Promise<GameSessionDto>
    */
+  @OnEvent('map.generated')
   async updateSessionAfterMapGenerated(sessionId: string, mapId: string): Promise<GameSessionDto> {
     const sessionDb = await this.gameSessionRepository.update(sessionId, {
       map_id: mapId,
@@ -54,8 +59,8 @@ export class GameSessionService {
     });
     const dto = GameSessionMapper.toDto(GameSessionMapper.toEntity(sessionDb));
 
-    // Отправить обновление состояния по WebSocket
     this.gameSessionGateway.emitGameStateUpdate(sessionId, dto);
+
     return dto;
   }
 
