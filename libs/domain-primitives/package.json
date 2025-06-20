@@ -1,13 +1,18 @@
 {
   "name": "@libs/domain-primitives",
   "version": "0.0.1",
-  "type": "module",
   "private": true,
-  "exports": "./index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "scripts": {
+    "pipeline:build": "tsc"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^24.0.3"
   }
 }

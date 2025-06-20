@@ -4,7 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": [
-        "^build"
+        "^build",
+        "^pipeline:build"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
@@ -22,6 +23,9 @@
       ]
     },
     "start:dev": {
+      "dependsOn": [
+        "^pipeline:build"
+      ],
       "cache": false,
       "persistent": true
     },
@@ -31,6 +35,10 @@
       ],
       "cache": false,
       "persistent": true
+    },
+    "pipeline:build": {
+      "cache": true,
+      "persistent": false
     }
   }
 }

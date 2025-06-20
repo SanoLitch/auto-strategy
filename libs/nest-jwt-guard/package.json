@@ -1,15 +1,17 @@
 {
   "name": "@libs/nest-jwt-guard",
   "version": "0.0.1",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "exports": "./index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
   "license": "MIT",
   "description": "Reusable NestJS JWT Auth Guard for monorepo.",
+  "scripts": {
+    "pipeline:build": "tsc"
+  },
   "peerDependencies": {
     "@nestjs/common": "^11.1.3",
-    "@nestjs/passport": "^11.0.5"
+    "@nestjs/passport": "^11.0.5",
+    "typescript": "^5.8.3"
   }
 }
