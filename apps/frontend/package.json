@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "start:dev": "vite",
+    "start:preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@libs/eslint-config": "workspace:*",
+    "@vitejs/plugin-react-swc": "^3.10.2",
+    "globals": "^16.2.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}

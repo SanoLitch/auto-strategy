@@ -1,0 +1,193 @@
+---
+description:
+globs: apps/frontend/**/*.ts,apps/frontend/**/*.tsx
+alwaysApply: false
+---
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# HeroUI Components Usage Rules (MANDATORY)
+
+**ALWAYS use HeroUI components instead of HTML elements or custom components when available:**
+
+## Core UI Elements (Replace HTML tags):
+- `<Button>` instead of `<button>`
+- `<Input>` instead of `<input>`
+- `<Card>` for containers instead of `<div>` with custom styles
+- `<Avatar>` for user avatars
+- `<Chip>` for tags and labels
+- `<Badge>` for indicators
+
+## Forms and Validation:
+- `<Form>` instead of `<form>`
+- `<Input>`, `<Textarea>`, `<Select>` for form fields
+- `<Checkbox>`, `<Radio>`, `<Switch>` for form controls
+- Always use built-in validation with `isInvalid` and `errorMessage` props
+
+## Navigation:
+- `<Link>` instead of `<a>` or router components
+- `<Tabs>` for tab navigation
+- `<Breadcrumbs>` for breadcrumb navigation
+- `<Pagination>` for pagination
+
+## Modals and Overlays:
+- `<Modal>` instead of custom modals
+- `<Popover>` for popups
+- `<Tooltip>` for tooltips
+- `<Dropdown>` for dropdown menus
+
+## Data Display:
+- `<Table>` for tables
+- `<Listbox>` for lists
+- `<Card>` for data cards
+- `<Accordion>` for collapsible sections
+
+## Status Indicators:
+- `<Spinner>` for loading states
+- `<Progress>` for progress bars
+- `<Skeleton>` for loading skeletons
+
+## Notifications:
+- `addToast()` for toast notifications
+
+## Component Priority Order:
+1. **First Priority**: Native HeroUI component
+2. **Second Priority**: Combination of HeroUI components
+3. **Third Priority**: Extended HeroUI component via `extendVariants`
+4. **Last Priority**: Custom component (only if HeroUI doesn't cover the need)
+
+## Before Writing Any UI Code:
+1. Check if suitable HeroUI component exists
+2. Study component documentation for proper usage
+3. Use correct props (`color`, `variant`, `size`, etc.)
+4. Apply built-in validation and state handling
+5. Follow HeroUI patterns for consistency
+
+## Import Rules:
+```jsx
+// Preferred: Import from main package
+import {Button, Card, Input, Modal} from "@heroui/react";
+
+// Alternative: Import individual components for bundle optimization
+import {Button} from "@heroui/button";
+import {Card} from "@heroui/card";
+```
+
+## Common Patterns:
+
+### Forms with Validation:
+```jsx
+import {Form, Input, Button} from "@heroui/react";
+
+const MyForm = () => {
+  return (
+    <Form>
+      <Input
+        isRequired
+        label="Email"
+        type="email"
+        errorMessage="Please enter a valid email"
+      />
+      <Button type="submit" color="primary">
+        Submit
+      </Button>
+    </Form>
+  );
+};
+```
+
+### Cards Layout:
+```jsx
+import {Card, CardHeader, CardBody, CardFooter, Button} from "@heroui/react";
+
+const MyCard = () => {
+  return (
+    <Card>
+      <CardHeader>
+        <h3>Title</h3>
+      </CardHeader>
+      <CardBody>
+        <p>Content</p>
+      </CardBody>
+      <CardFooter>
+        <Button color="primary">Action</Button>
+      </CardFooter>
+    </Card>
+  );
+};
+```
+
+### Modals:
+```jsx
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@heroui/react";
+
+const MyModal = () => {
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+  return (
+    <>
+      <Button onPress={onOpen}>Open Modal</Button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Modal Title</ModalHeader>
+              <ModalBody>Modal content</ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+```
+
+## Example Usage Comparison:
+
+### ❌ Wrong (Custom HTML/CSS):
+```jsx
+<div className="bg-white border rounded-lg p-4 shadow">
+  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+    Click me
+  </button>
+  <input className="border border-gray-300 rounded px-3 py-2" placeholder="Enter text" />
+</div>
+```
+
+### ✅ Correct (HeroUI Components):
+```jsx
+<Card className="p-4">
+  <Button color="primary" variant="solid">
+    Click me
+  </Button>
+  <Input placeholder="Enter text" />
+</Card>
+```
+
+## Theme and Styling:
+- Always use HeroUI's built-in color system: `primary`, `secondary`, `success`, `warning`, `danger`
+- Use HeroUI variants: `solid`, `bordered`, `light`, `flat`, `faded`, `shadow`, `ghost`
+- Use HeroUI sizes: `sm`, `md`, `lg`
+- Apply consistent spacing using HeroUI's design tokens
+
+## Accessibility:
+- HeroUI components come with built-in accessibility features
+- Always provide proper labels and descriptions
+- Use `aria-label` when needed
+- Ensure keyboard navigation works properly
+
+## Performance:
+- Use individual component imports when bundle size matters
+- Leverage HeroUI's built-in optimizations
+- Avoid unnecessary custom styling that duplicates HeroUI functionality

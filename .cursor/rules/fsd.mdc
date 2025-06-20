@@ -1,0 +1,75 @@
+---
+description:
+globs: apps/frontend/**/*.ts,apps/frontend/**/*.tsx
+alwaysApply: false
+---
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# FSD Architecture (No features/process)
+
+## `app/`
+- **Purpose**: Application shell, routing, and global setup
+- **Contains**:
+  - App configuration
+  - Providers (theme, store, etc.)
+  - Root routing
+  - Global styles
+- **Examples**:
+  - `app/router/`
+  - `app/providers/`
+  - `app/styles/`
+
+## `pages/`
+- **Purpose**: Page composition
+- **Contains**:
+  - Page-level components
+  - Route-specific layouts
+  - Minimal presentation logic
+- **Rules**:
+  - Should only combine widgets/entities
+  - No business logic
+- **Examples**:
+  - `pages/home/`
+  - `pages/profile/`
+
+## `widgets/`
+- **Purpose**: Self-contained UI blocks
+- **Contains**:
+  - Complex components
+  - Cross-entity compositions
+  - Some UI logic
+- **Rules**:
+  - Can use multiple entities
+  - Should be reusable
+- **Examples**:
+  - `widgets/navbar/`
+  - `widgets/auth-form/`
+
+## `entities/`
+- **Purpose**: Business domain units
+- **Contains**:
+  - Business logic
+  - Data models
+  - API interactions
+  - State management
+- **Rules**:
+  - Should be domain-specific
+  - Can contain full vertical slices
+- **Examples**:
+  - `entities/user/`
+  - `entities/order/`
+
+## `shared/`
+- **Purpose**: Reusable infrastructure
+- **Subdirectories**:
+  - `ui/`: Basic components (Button, Modal)
+  - `lib/`: Utilities and helpers
+  - `config/`: App configurations
+  - `api/`: API clients
+- **Rules**:
+  - No business logic
+  - Framework-agnostic when possible
