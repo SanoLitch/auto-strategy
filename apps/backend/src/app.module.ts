@@ -16,8 +16,7 @@ import { AppConfig } from './config/env.validation';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService<AppConfig>) => configService.get('NODE_ENV', 'development'),
+      useFactory: (configService: ConfigService) => configService.get('NODE_ENV', 'development'),
     }),
     DbModule,
     UserModule,
