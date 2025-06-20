@@ -1,0 +1,9 @@
+model Building {
+  id        String @id @default(uuid())
+  player_id String @map("playerId")
+  type      String
+  position  Json
+  path      Json?
+
+  @@map("buildings")
+}

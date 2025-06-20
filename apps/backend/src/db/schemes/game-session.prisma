@@ -1,0 +1,9 @@
+model GameSession {
+  id          String    @id @default(uuid())
+  map_id      String    @map("mapId")
+  status      String
+  created_at  DateTime  @default(now()) @map("createdAt")
+  finished_at DateTime? @map("finishedAt")
+
+  @@map("game_sessions")
+}

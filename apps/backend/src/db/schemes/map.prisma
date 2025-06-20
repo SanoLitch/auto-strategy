@@ -1,0 +1,9 @@
+model Map {
+  id           String @id @default(uuid())
+  name         String
+  size         Json
+  terrain_data Json   @map("terrainData")
+  spawn_points Json   @map("spawnPoints")
+
+  @@map("maps")
+}

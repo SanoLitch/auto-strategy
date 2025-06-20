@@ -1,0 +1,10 @@
+model Unit {
+  id          String @id @default(uuid())
+  player_id   String @map("playerId")
+  building_id String @map("buildingId")
+  type        String
+  position    Json
+  health      Int
+
+  @@map("units")
+}
