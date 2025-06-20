@@ -31,7 +31,8 @@ export class GameSessionController {
   @ApiOperation({ summary: 'Create a new game session' })
   @ApiResponse({
     status: 201,
-    description: 'The game session has been successfully created.',
+    description: 'Game session created. Returns GameSessionDto with status GENERATING_MAP '
+      + '(map is generated asynchronously).',
     type: GameSessionDto,
   })
   async createGameSession(): Promise<GameSessionDto> {
