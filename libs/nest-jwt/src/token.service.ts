@@ -11,9 +11,6 @@ export class TokenService {
     private readonly configService: ConfigService<TokenModuleConfig>,
   ) {}
 
-  /**
-   * Генерирует accessToken и возвращает его с временем жизни (мс).
-   */
   public generateAccessToken(payload: object): TokenWithExpiry {
     const expiresInStr = this.configService.getOrThrow('ACCESS_TOKEN_EXPIRES_IN', { infer: true });
     const expiresIn = this.parseExpiresInToMs(expiresInStr);
@@ -21,9 +18,6 @@ export class TokenService {
     return { token, expiresIn };
   }
 
-  /**
-   * Генерирует refreshToken и возвращает его с временем жизни (мс).
-   */
   public generateRefreshToken(payload: object): TokenWithExpiry {
     const expiresInStr = this.configService.getOrThrow('REFRESH_TOKEN_EXPIRES_IN', { infer: true });
     const expiresIn = this.parseExpiresInToMs(expiresInStr);
@@ -31,9 +25,6 @@ export class TokenService {
     return { token, expiresIn };
   }
 
-  /**
-   * Преобразует строку времени жизни токена в миллисекунды.
-   */
   private parseExpiresInToMs(expiresIn: string): number {
     // Поддержка форматов: '3600', '1h', '7d', '30m', '10s'
     const match = expiresIn.match(/^(\d+)([smhd]?)$/);

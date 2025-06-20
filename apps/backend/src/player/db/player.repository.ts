@@ -1,7 +1,3 @@
-/**
- * Репозиторий для работы с игроками в базе данных.
- * TODO: Реализовать методы доступа к данным.
- */
 import { Injectable } from '@nestjs/common';
 import {
   Prisma, Player as PlayerDb,

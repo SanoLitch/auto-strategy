@@ -1,16 +1,8 @@
-/**
- * Доменная сущность здания.
- */
 export class Building {
-  /** Уникальный идентификатор здания */
   readonly id: string;
-  /** Идентификатор игрока-владельца */
   readonly playerId: string;
-  /** Тип здания */
   readonly type: string;
-  /** Координаты на карте */
   readonly position: Record<string, number>;
-  /** Путь для юнитов */
   readonly path?: Record<string, number>[];
 
   constructor(params: {

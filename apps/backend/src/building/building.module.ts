@@ -3,9 +3,6 @@ import { BuildingController } from './api/building.controller';
 import { BuildingService } from './domain/building.service';
 import { BuildingRepository } from './db/building.repository';
 
-/**
- * Модуль здания.
- */
 @Module({
   controllers: [BuildingController],
   providers: [BuildingService, BuildingRepository],

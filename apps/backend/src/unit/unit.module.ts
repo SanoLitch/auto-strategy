@@ -3,9 +3,6 @@ import { UnitController } from './api/unit.controller';
 import { UnitService } from './domain/unit.service';
 import { UnitRepository } from './db/unit.repository';
 
-/**
- * Модуль юнита.
- */
 @Module({
   controllers: [UnitController],
   providers: [UnitService, UnitRepository],

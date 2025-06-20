@@ -1,18 +1,10 @@
 import { randomUUID } from 'crypto';
 
-/**
- * Доменная сущность игрока.
- */
 export class Player {
-  /** Уникальный идентификатор игрока */
   readonly id: string;
-  /** Идентификатор пользователя */
   readonly userId: string;
-  /** Идентификатор игровой сессии */
   readonly gameSessionId: string;
-  /** Ресурсы игрока */
   readonly resources: Record<string, number>;
-  /** Флаг победителя */
   readonly isWinner?: boolean;
 
   constructor(params: {
@@ -54,9 +46,6 @@ export class Player {
     });
   }
 
-  /**
-   * Обновить ресурсы игрока (возвращает новый экземпляр).
-   */
   public withResources(resources: Record<string, number>): Player {
     return new Player({
       ...this,
@@ -64,9 +53,6 @@ export class Player {
     });
   }
 
-  /**
-   * Присвоить статус победителя (возвращает новый экземпляр).
-   */
   public withWinner(isWinner: boolean = true): Player {
     return new Player({
       ...this,

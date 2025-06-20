@@ -4,9 +4,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-/**
- * DTO для авторизации пользователя.
- */
 export class LoginDto {
   @IsEmail()
   email: string;

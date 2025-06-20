@@ -1,21 +1,18 @@
 import {
-  Controller, Get, Post, Param, HttpCode, HttpStatus,
+  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger,
 } from '@nestjs/common';
 import { GameSessionDto } from './game-session.dto';
 import { GameSessionService } from '../domain/game-session.service';
 
-/**
- * Контроллер для управления игровыми сессиями.
- */
 @Controller('games')
 export class GameSessionController {
+  private readonly logger = new Logger(GameSessionController.name);
+
   constructor(private readonly gameSessionService: GameSessionService) {}
 
-  /**
-   * Smoke test endpoint для проверки работоспособности модуля.
-   */
   @Get('admin/test')
   test(): string {
+    this.logger.log('GET /games/admin/test');
     return 'GameSession module is working';
   }
 
@@ -26,18 +23,17 @@ export class GameSessionController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createGameSession(): Promise<GameSessionDto> {
+    this.logger.log('POST /games - create game session');
+
     const session = await this.gameSessionService.createGameSession();
 
     return session;
   }
 
-  /**
-   * Получить состояние игровой сессии по id.
-   * @param id string
-   * @returns GameSessionDto
-   */
   @Get(':id')
   async getGameSession(@Param('id') id: string): Promise<GameSessionDto> {
+    this.logger.log(`GET /games/${ id }`);
+
     const session = await this.gameSessionService.getGameSessionById(id);
 
     return session;

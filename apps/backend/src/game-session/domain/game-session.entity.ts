@@ -1,6 +1,3 @@
-/**
- * Перечисление статусов игровой сессии.
- */
 export enum GameSessionStatus {
   GeneratingMap = 'GENERATING_MAP',
   Waiting = 'WAITING',
@@ -8,20 +5,11 @@ export enum GameSessionStatus {
   Finished = 'FINISHED',
 }
 
-/**
- * Доменная сущность игровой сессии.
- * См. docs/06_game_session_analytics.md
- */
 export class GameSession {
-  /** Уникальный идентификатор сессии */
   readonly id: string;
-  /** Идентификатор карты (может быть null до генерации) */
   readonly mapId: string | null;
-  /** Статус игры */
   readonly status: GameSessionStatus;
-  /** Дата создания */
   readonly createdAt: Date;
-  /** Дата завершения */
   readonly finishedAt?: Date;
 
   constructor(params: {

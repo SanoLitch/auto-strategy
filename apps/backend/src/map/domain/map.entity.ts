@@ -1,9 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { Uuid } from '@libs/domain-primitives';
 
-/**
- * Value Object для размера карты.
- */
 export class MapSize {
   public readonly width: number;
   public readonly height: number;
@@ -23,9 +20,6 @@ export class MapSize {
     };
   }
 
-  /**
-   * Создать MapSize из JSON-объекта (например, из Prisma JsonValue).
-   */
   static fromJSON(json: Prisma.JsonValue): MapSize {
     const {
       width, height,
@@ -35,9 +29,6 @@ export class MapSize {
   }
 }
 
-/**
- * Value Object для точки спауна.
- */
 export class SpawnPoint {
   constructor(private readonly x: number, private readonly y: number) {
     if (x < 0 || y < 0) {
@@ -54,9 +45,6 @@ export class SpawnPoint {
     };
   }
 
-  /**
-   * Создать SpawnPoint из JSON-объекта (например, из Prisma JsonValue).
-   */
   static fromJSON(json: Prisma.JsonValue): SpawnPoint {
     const {
       x, y,
@@ -66,36 +54,16 @@ export class SpawnPoint {
   }
 }
 
-/**
- * Value Object для типа породы.
- */
 export enum TerrainType {
   Dirt = 'Dirt',
   Rock = 'Rock',
   Bedrock = 'Bedrock',
 }
 
-/**
- * Доменная сущность карты.
- *
- * Пример:
- * const map = new Map({
- *   id: Uuid.create(),
- *   size: new MapSize(100, 100),
- *   terrainData: [],
- *   spawnPoints: []
- * });
- * map.generateTerrain();
- * map.generateSpawnPoints(playersCount);
- */
 export class Map {
-  /** Уникальный идентификатор карты (Value Object) */
   private readonly id: Uuid;
-  /** Размеры карты */
   readonly size: MapSize;
-  /** Данные о ландшафте (двумерный массив типов пород) */
   terrainData: TerrainType[][];
-  /** Координаты стартовых позиций */
   spawnPoints: SpawnPoint[];
 
   constructor(params: {
@@ -110,16 +78,10 @@ export class Map {
     this.spawnPoints = params.spawnPoints ?? [];
   }
 
-  /**
-   * Получить строковое значение UUID карты.
-   */
   getId(): string {
     return this.id.getValue();
   }
 
-  /**
-   * Сгенерировать ландшафт карты (terrainData) и сохранить в this.terrainData.
-   */
   generateTerrain(): void {
     const types = [
       TerrainType.Dirt,
@@ -132,10 +94,6 @@ export class Map {
         types[Math.floor(Math.random() * types.length)] as TerrainType));
   }
 
-  /**
-   * Сгенерировать стартовые точки для игроков и сохранить в this.spawnPoints.
-   * @param playersCount Количество игроков
-   */
   generateSpawnPoints(playersCount: number): void {
     const points: SpawnPoint[] = [];
 

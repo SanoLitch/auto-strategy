@@ -2,19 +2,11 @@ import {
   Uuid, PasswordHash,
 } from '@libs/domain-primitives';
 
-/**
- * Доменная сущность пользователя.
- */
 export class User {
-  /** Уникальный идентификатор пользователя */
   readonly id: Uuid;
-  /** Email пользователя */
   readonly email: string;
-  /** Хеш пароля */
   readonly passwordHash: PasswordHash;
-  /** Дата создания */
   readonly createdAt: Date;
-  /** Дата обновления */
   readonly updatedAt: Date;
 
   constructor(params: {
@@ -31,11 +23,6 @@ export class User {
     this.updatedAt = params.updatedAt;
   }
 
-  /**
-   * Фабричный метод для создания нового пользователя.
-   * @param params - Данные для создания пользователя (email, пароль).
-   * @returns Promise<User> - Экземпляр доменной сущности User.
-   */
   public static async create(params: { email: string; password?: string }): Promise<User> {
     const passwordHash = params.password
       ? await PasswordHash.create(params.password)

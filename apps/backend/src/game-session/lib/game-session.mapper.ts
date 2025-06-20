@@ -4,13 +4,7 @@ import {
 } from '../domain/game-session.entity';
 import { GameSessionDto } from '../api/game-session.dto';
 
-/**
- * Маппер для преобразования данных игровой сессии между слоями.
- */
 export class GameSessionMapper {
-  /**
-   * Преобразовать Prisma-модель в доменную сущность.
-   */
   public static toEntity(db: GameSessionDb): GameSession {
     return new GameSession({
       id: db.id,
@@ -21,9 +15,6 @@ export class GameSessionMapper {
     });
   }
 
-  /**
-   * Преобразовать доменную сущность в Prisma-модель (для создания/обновления).
-   */
   public static toPersistence(entity: GameSession): Partial<GameSessionDb> {
     return {
       id: entity.id,
@@ -34,9 +25,6 @@ export class GameSessionMapper {
     };
   }
 
-  /**
-   * Преобразовать доменную сущность в DTO для API.
-   */
   public static toDto(entity: GameSession): GameSessionDto {
     return {
       id: entity.id,

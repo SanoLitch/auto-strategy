@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
-import { DbModule } from 'src/db';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MapController } from './api/map.controller';
 import { MapService } from './domain/map.service';
 import { MapRepository } from './db/map.repository';
+import { DbModule } from '../db';
 
-/**
- * Модуль карты.
- */
 @Module({
   imports: [DbModule, EventEmitterModule],
   controllers: [MapController],

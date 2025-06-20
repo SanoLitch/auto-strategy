@@ -4,9 +4,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-/**
- * DTO для регистрации пользователя.
- */
 export class RegisterDto {
   @IsEmail()
   email: string;

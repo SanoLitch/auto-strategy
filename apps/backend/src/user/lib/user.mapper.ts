@@ -1,17 +1,12 @@
 import {
   User as UserDb, Prisma,
 } from '@prisma/client';
-
 import {
   Uuid, PasswordHash,
 } from '@libs/domain-primitives';
-
 import { User as UserDomain } from '../domain/user.entity';
 import { UserDto } from '../api/user.dto';
 
-/**
- * Маппер для преобразования данных пользователя между слоями.
- */
 export class UserMapper {
   public static toEntity(userPrisma: UserDb): UserDomain {
     return new UserDomain({

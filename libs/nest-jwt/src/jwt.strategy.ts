@@ -4,9 +4,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 import { TokenModuleConfig } from './types';
 
-/**
- * JWT стратегия для аутентификации пользователей.
- */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService<TokenModuleConfig>) {
@@ -18,7 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   public async validate(payload: any): Promise<any> {
-    // Можно добавить дополнительные проверки
     return payload;
   }
 }

@@ -3,8 +3,6 @@ import {
   ConfigModule, ConfigService,
 } from '@nestjs/config';
 import { LoggerModule } from '@libs/logger';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DbModule } from './db';
 import { UserModule } from './user/user.module';
 import { GameSessionModule } from './game-session/game-session.module';
@@ -29,7 +27,5 @@ import { AppConfig } from './config/env.validation';
     UnitModule,
     MapModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule { }

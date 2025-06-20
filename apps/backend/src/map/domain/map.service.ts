@@ -1,8 +1,6 @@
-/**
- * Доменный сервис для работы с картами.
- * Инкапсулирует бизнес-логику генерации и получения карт.
- */
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable, Logger,
+} from '@nestjs/common';
 import { Uuid } from '@libs/domain-primitives';
 import {
   EventEmitter2, OnEvent,
@@ -25,6 +23,8 @@ interface MapGenerateEventPayload {
 
 @Injectable()
 export class MapService {
+  private readonly logger = new Logger(MapService.name);
+
   constructor(
     private readonly mapRepository: MapRepository,
     private readonly eventEmitter: EventEmitter2,
@@ -32,6 +32,8 @@ export class MapService {
 
   @OnEvent('map.generate')
   async handleMapGenerateEvent(payload: MapGenerateEventPayload) {
+    this.logger.log(`Handle map.generate event: sessionId=${ payload.sessionId }, size=${ JSON.stringify(payload.size) }, playersCount=${ payload.playersCount }`);
+
     const worker = new Worker(
       require.resolve('../lib/map-generation.worker'),
       {
@@ -59,13 +61,12 @@ export class MapService {
     const mapDb = await this.mapRepository.createMap(MapMapper.toPersistence(map));
 
     this.eventEmitter.emit('map.generated', new Uuid(payload.sessionId), new Uuid(mapDb.id));
+    this.logger.log(`Map generated and saved for sessionId=${ payload.sessionId }`);
   }
 
-  /**
-   * Получить карту по идентификатору.
-   * @param id UUID карты
-   */
   async getMapById(id: string): Promise<MapDto> {
+    this.logger.log(`Get map by id: ${ id }`);
+
     const mapDb = await this.mapRepository.findMapById(id);
 
     const map = MapMapper.toEntity(mapDb);

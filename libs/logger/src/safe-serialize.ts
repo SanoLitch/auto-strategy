@@ -1,9 +1,3 @@
-/**
- * Универсальный сериализатор для логирования объектов с глубокой вложенностью и защитой от циклических ссылок.
- * @param obj - объект для сериализации
- * @param depth - максимальная глубина обхода
- * @param seen - внутренний WeakSet для отслеживания циклов
- */
 export function safeSerialize(obj: any, depth = 5, seen = new WeakSet()): any {
   if (obj === null || typeof obj !== 'object') return obj;
 
