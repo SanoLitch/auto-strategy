@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PlayerController } from './api/player.controller';
 import { PlayerService } from './domain/player.service';
 import { PlayerRepository } from './db/player.repository';
-import { DbModule } from '../db';
+import { DbModule } from '../core/db';
 
 @Module({
   imports: [DbModule],

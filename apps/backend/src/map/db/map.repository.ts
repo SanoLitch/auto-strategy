@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Map as MapDb } from '@prisma/client';
-import { DbService } from '../../db/db.service';
+import { DbService } from '../../core/db/db.service';
 
 @Injectable()
 export class MapRepository {

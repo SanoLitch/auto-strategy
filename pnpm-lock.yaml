@@ -29,6 +29,9 @@ importers:
       '@libs/typescript-config':
         specifier: workspace:*
         version: link:../../libs/typescript-config
+      '@libs/utils':
+        specifier: workspace:*
+        version: link:../../libs/utils
       '@nestjs/common':
         specifier: ^11.1.3
         version: 11.1.3(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -240,6 +243,12 @@ importers:
         version: 4.0.1
 
   libs/typescript-config: {}
+
+  libs/utils:
+    devDependencies:
+      '@libs/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
 packages:
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   Prisma, GameSession as GameSessionDb,
 } from '@prisma/client';
-import { DbService } from '../../db/db.service';
+import { DbService } from '../../core/db/db.service';
 
 @Injectable()
 export class GameSessionRepository {

@@ -12,7 +12,7 @@ import { RegisterDto } from './register.dto';
 import { LoginDto } from './login.dto';
 import { UserDto } from './user.dto';
 import { UserService } from '../domain/user.service';
-import { AppConfig } from '../../config/env.validation';
+import { AppConfig } from '../../core';
 
 interface RequestWithUser extends Request {
   user: {

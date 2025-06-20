@@ -4,7 +4,7 @@ import { TokenModule } from '@libs/nest-jwt';
 import { UserController } from './api/user.controller';
 import { UserService } from './domain/user.service';
 import { UserRepository } from './db/user.repository';
-import { DbModule } from '../db';
+import { DbModule } from '../core/db';
 
 @Module({
   imports: [
