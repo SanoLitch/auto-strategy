@@ -1,18 +1,18 @@
 import {
-  Controller, Post, Body, Get, Req, UseGuards, Res,
+  Body, Controller, Get, Logger, Post, Req, UseGuards, Res,
 } from '@nestjs/common';
 import {
   Request, Response,
 } from 'express';
+import {
+  ApiBody, ApiOperation, ApiResponse, ApiTags, ApiCookieAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '@libs/nest-jwt';
-import { Logger } from '@nestjs/common';
-
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './register.dto';
 import { LoginDto } from './login.dto';
 import { UserDto } from './user.dto';
 import { UserService } from '../domain/user.service';
-import { AppConfig } from '../../core';
 
 interface RequestWithUser extends Request {
   user: {
@@ -20,31 +20,58 @@ interface RequestWithUser extends Request {
   };
 }
 
-@Controller('api/v1/users')
+@ApiTags('User')
+@Controller('v1/users')
 export class UserController {
-  private readonly logger = new Logger(UserController.name);
+  private readonly logger: Logger = new Logger(UserController.name);
 
   constructor(
     private readonly userService: UserService,
-    private readonly configService: ConfigService<AppConfig>,
-  ) { }
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully registered.',
+    type: UserDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request. Invalid input data.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. User with this email already exists.',
+  })
   public async register(@Body() dto: RegisterDto): Promise<UserDto> {
-    this.logger.log(`POST /api/v1/users - register: ${ dto.email }`);
+    this.logger.log(`POST /v1/users - register: ${ dto.email }`);
 
     return this.userService.register(dto);
   }
 
   @Post('login')
+  @ApiOperation({ summary: 'Log in a user and set httpOnly cookies' })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully logged in. Access and refresh tokens are set as httpOnly cookies.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized. Invalid credentials.',
+  })
   public async login(
     @Body() dto: LoginDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    this.logger.log(`POST /api/v1/users/login - login: ${ dto.email }`);
+    this.logger.log(`POST /v1/users/login - login: ${ dto.email }`);
 
     const {
-      access, refresh,
+      access,
+      refresh,
     } = await this.userService.login(dto);
 
     const isProd = this.configService.get('NODE_ENV', 'development') === 'production';
@@ -66,8 +93,19 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
+  @ApiCookieAuth()
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the current user profile.',
+    type: UserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
+  })
   public async me(@Req() req: RequestWithUser): Promise<UserDto> {
-    this.logger.log(`GET /api/v1/users/me - user: ${ req.user.sub }`);
+    this.logger.log(`GET /v1/users/me - user: ${ req.user.sub }`);
 
     return this.userService.getMe(req.user);
   }

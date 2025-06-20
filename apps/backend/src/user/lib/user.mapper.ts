@@ -22,8 +22,8 @@ export class UserMapper {
     return {
       id: user.id.getValue(),
       email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
     };
   }
 
