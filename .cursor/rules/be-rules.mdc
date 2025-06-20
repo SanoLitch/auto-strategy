@@ -43,41 +43,41 @@ Generate code, corrections, and refactorings that comply with the basic principl
 ### Domain-Driven Design (DDD) Principles
 
 ## General Principles:
-Thin Services, Rich Domain: Services in the domain layer should act as orchestrators (Application Services). They coordinate the workflow but do not contain business logic. All business rules, validations, and logic should be encapsulated within Domain Entities and Value Objects.
-Separation of Concerns: Strictly separate layers. The api layer communicates with the domain layer via DTOs. The domain layer is self-contained. The db layer (Repositories) communicates with the database and should be persistence-ignorant from the domain's perspective.
-Explicit Dependencies: The domain layer should have no dependencies on external frameworks or libraries (like NestJS, Express, or even database-specific libraries like Prisma Client). All external interactions should be handled at the application's boundaries (services, controllers, mappers).
+- Thin Services, Rich Domain: Services in the domain layer should act as orchestrators (Application Services). They coordinate the workflow but do not contain business logic. All business rules, validations, and logic should be encapsulated within Domain Entities and Value Objects.
+- Separation of Concerns: Strictly separate layers. The api layer communicates with the domain layer via DTOs. The domain layer is self-contained. The db layer (Repositories) communicates with the database and should be persistence-ignorant from the domain's perspective.
+- Explicit Dependencies: The domain layer should have no dependencies on external frameworks or libraries (like NestJS, Express, or even database-specific libraries like Prisma Client). All external interactions should be handled at the application's boundaries (services, controllers, mappers).
 
 ## Domain Entities:
-Identity and Mutability: An entity has a unique identity (id) that remains constant throughout its lifecycle. Its other properties can be mutable.
-Encapsulation: An entity is responsible for maintaining its own invariants (business rules that must always be true). Its internal state should only be modified through its own methods, never directly from a service.
-Factory Methods for Creation: Use static factory methods (e.g., static create(...)) to construct new entity instances. This method should encapsulate all the logic for creating a valid entity, including:
-Generating a unique ID (Uuid.create()).
-Hashing passwords (PasswordHash.create(...)).
-Setting default values (e.g., createdAt).
-Validating input parameters.
-Business Logic in Methods: All operations that change or query the state of an entity should be implemented as methods on the entity itself (e.g., isPasswordMatching(...), updateProfile(...), deactivate()).
+- Identity and Mutability: An entity has a unique identity (id) that remains constant throughout its lifecycle. Its other properties can be mutable.
+- Encapsulation: An entity is responsible for maintaining its own invariants (business rules that must always be true). Its internal state should only be modified through its own methods, never directly from a service.
+- Factory Methods for Creation: Use static factory methods (e.g., static create(...)) to construct new entity instances. This method should encapsulate all the logic for creating a valid entity, including:
+  - Generating a unique ID (Uuid.create()).
+  - Hashing passwords (PasswordHash.create(...)).
+  - Setting default values (e.g., createdAt).
+  -Validating input parameters.
+- Business Logic in Methods: All operations that change or query the state of an entity should be implemented as methods on the entity itself (e.g., isPasswordMatching(...), updateProfile(...), deactivate()).
 
 ## Value Objects (VOs)
-No Identity: A Value Object is defined by its attributes, not by an ID. Two VOs with the same attributes are considered equal.
-Immutability: A Value Object must be immutable. Once created, its state cannot be changed. If a change is needed, a new instance of the VO should be created. All properties should be readonly.
-Encapsulation of Primitives: Use VOs to wrap primitive types (string, number) that have business meaning. This prevents "Primitive Obsession" and makes the domain model more expressive.
-string for a password hash -> PasswordHash VO.
-string for a UUID -> Uuid VO.
-string for an email -> Email VO.
-Self-Validation: A VO should validate its own value upon creation in its constructor or a factory method. It should be impossible to create an invalid VO.
+- No Identity: A Value Object is defined by its attributes, not by an ID. Two VOs with the same attributes are considered equal.
+- Immutability: A Value Object must be immutable. Once created, its state cannot be changed. If a change is needed, a new instance of the VO should be created. All properties should be readonly.
+- Encapsulation of Primitives: Use VOs to wrap primitive types (string, number) that have business meaning. This prevents "Primitive Obsession" and makes the domain model more expressive.
+  - string for a password hash -> PasswordHash VO.
+  - string for a UUID -> Uuid VO.
+  - string for an email -> Email VO.
+- Self-Validation: A VO should validate its own value upon creation in its constructor or a factory method. It should be impossible to create an invalid VO.
 
 ## Repositories
-Persistence Ignorance: Repositories are the boundary between the domain and the data access layer. They should present an interface that feels like an in-memory collection.
-Return Persistence Models: Repositories should accept and return "raw" persistence models (e.g., Prisma models), not domain entities. The responsibility for mapping between persistence models and domain entities lies with the Application Service (or a dedicated Mapper called by the service).
-Fail-Fast: Prefer methods that throw an exception when an item is not found (e.g., findUniqueOrThrow) over methods that return null. This simplifies the service layer by centralizing error handling.
+- Persistence Ignorance: Repositories are the boundary between the domain and the data access layer. They should present an interface that feels like an in-memory collection.
+- Return Persistence Models: Repositories should accept and return "raw" persistence models (e.g., Prisma models), not domain entities. The responsibility for mapping between persistence models and domain entities lies with the Application Service (or a dedicated Mapper called by the service).
+- Fail-Fast: Prefer methods that throw an exception when an item is not found (e.g., findUniqueOrThrow) over methods that return null. This simplifies the service layer by centralizing error handling.
 
 ## Mappers
-Single Responsibility: A mapper's only job is to translate data between layers.
-Clear Method Naming: Use explicit names for mapping methods:
-toEntity(persistenceModel): DomainEntity (or toDomain)
-toDto(domainEntity): DTO
-toPersistence(domainEntity): PersistenceModel
-Hydration/Dehydration: The mapper is responsible for "hydrating" Value Objects from primitive types when mapping toEntity, and "dehydrating" them back to primitives when mapping toPersistence or toDto.
+- Single Responsibility: A mapper's only job is to translate data between layers.
+- Clear Method Naming: Use explicit names for mapping methods:
+- toEntity(persistenceModel): DomainEntity (or toDomain)
+- toDto(domainEntity): DTO
+- toPersistence(domainEntity): PersistenceModel
+- Hydration/Dehydration: The mapper is responsible for "hydrating" Value Objects from primitive types when mapping toEntity, and "dehydrating" them back to primitives when mapping toPersistence or toDto.
 
 ### Nomenclature
 
