@@ -22,6 +22,8 @@ Generate code, corrections, and refactorings that comply with the basic principl
   - Avoid using any.
   - Create necessary types.
 - Use JSDoc to document public classes and methods.
+- Use access modifiers for class members explicit.
+- Use method/function return type explicit.
 - Don't leave blank lines within a function.
 - One export per file.
 - Use yarn for package management.
