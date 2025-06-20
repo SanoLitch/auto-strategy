@@ -1,4 +1,6 @@
-import { Uuid, PasswordHash } from '@libs/domain-primitives';
+import {
+  Uuid, PasswordHash,
+} from '@libs/domain-primitives';
 
 /**
  * Доменная сущность пользователя.

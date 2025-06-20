@@ -1,6 +1,10 @@
-import { User as UserDb, Prisma } from '@prisma/client';
+import {
+  User as UserDb, Prisma,
+} from '@prisma/client';
 
-import { Uuid, PasswordHash } from '@libs/domain-primitives';
+import {
+  Uuid, PasswordHash,
+} from '@libs/domain-primitives';
 
 import { User as UserDomain } from '../domain/user.entity';
 import { UserDto } from '../api/user.dto';

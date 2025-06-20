@@ -4,12 +4,12 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 
+import { User } from './user.entity';
 import { UserRepository } from '../db/user.repository';
 import { RegisterDto } from '../api/register.dto';
 import { LoginDto } from '../api/login.dto';
 import { UserMapper } from '../lib/user.mapper';
 import { UserDto } from '../api/user.dto';
-import { User } from './user.entity';
 
 /**
  * Сервис для регистрации, авторизации и аутентификации пользователя.
@@ -42,6 +42,7 @@ export class UserService {
     });
 
     const persistenceData = UserMapper.toPersistence(newUser);
+
     await this.userRepository.create(persistenceData);
 
     return UserMapper.toDto(newUser);
@@ -60,7 +61,10 @@ export class UserService {
         throw new UnauthorizedException('Invalid credentials');
       }
 
-      const payload = { email: userEntity.email, sub: userEntity.id };
+      const payload = {
+        email: userEntity.email,
+        sub: userEntity.id,
+      };
       const accessToken = this.jwtService.sign(payload);
       const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 

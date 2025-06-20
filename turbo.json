@@ -4,8 +4,9 @@
   "tasks": {
     "build": {
       "dependsOn": [
-        "^build",
-        "^pipeline:build"
+        "^prisma:generate",
+        "^pipeline:build",
+        "^build"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
@@ -24,6 +25,7 @@
     },
     "start:dev": {
       "dependsOn": [
+        "^prisma:generate",
         "^pipeline:build"
       ],
       "cache": false,
@@ -33,8 +35,8 @@
       "with": [
         "backend#prisma:generate"
       ],
-      "cache": false,
-      "persistent": true
+      "cache": true,
+      "persistent": false
     },
     "pipeline:build": {
       "cache": true,

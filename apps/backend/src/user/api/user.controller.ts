@@ -6,8 +6,8 @@ import { JwtAuthGuard } from '@libs/nest-jwt-guard';
 
 import { RegisterDto } from './register.dto';
 import { LoginDto } from './login.dto';
-import { UserService } from '../domain/user.service';
 import { UserDto } from './user.dto';
+import { UserService } from '../domain/user.service';
 
 interface RequestWithUser extends Request {
   user: {
