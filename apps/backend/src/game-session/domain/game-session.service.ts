@@ -52,16 +52,12 @@ export class GameSessionService {
    * @returns Promise<GameSessionDto>
    */
   @OnEvent('map.generated')
-  async updateSessionAfterMapGenerated(sessionId: string, mapId: string): Promise<GameSessionDto> {
-    const sessionDb = await this.gameSessionRepository.update(sessionId, {
+  async updateSessionAfterMapGenerated(sessionId: string, mapId: string): Promise<void> {
+    await this.gameSessionRepository.update(sessionId, {
       map_id: mapId,
       status: GameSessionStatus.Waiting,
     });
-    const dto = GameSessionMapper.toDto(GameSessionMapper.toEntity(sessionDb));
-
-    this.gameSessionGateway.emitGameStateUpdate(sessionId, dto);
-
-    return dto;
+    this.onGameSessionChanged(sessionId);
   }
 
   /**
@@ -73,5 +69,15 @@ export class GameSessionService {
     const sessionDb = await this.gameSessionRepository.findById(sessionId);
 
     return GameSessionMapper.toDto(GameSessionMapper.toEntity(sessionDb));
+  }
+
+  /**
+   * Обработчик события изменения состояния игровой сессии (game-session.changed).
+   */
+  @OnEvent('game-session.changed')
+  async onGameSessionChanged(sessionId: string): Promise<void> {
+    const dto = await this.getGameSessionById(sessionId);
+
+    this.gameSessionGateway.emitGameStateUpdate(sessionId, dto);
   }
 }
