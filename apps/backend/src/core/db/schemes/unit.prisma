@@ -1,10 +1,17 @@
 model Unit {
-  id          String @id @default(uuid())
-  player_id   String @map("playerId")
-  building_id String @map("buildingId")
-  type        String
+  id          String   @id @default(uuid())
+  player_id   String   @map("playerId")
+  building_id String   @map("buildingId")
+  type        UnitType
   position    Json
   health      Int
 
   @@map("units")
+}
+
+enum UnitType {
+  DIGGER
+  MINER
+  WARRIOR
+  SCOUT
 }

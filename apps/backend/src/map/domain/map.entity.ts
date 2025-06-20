@@ -38,6 +38,10 @@ export class SpawnPoint {
     this.y = y;
   }
 
+  get point() {
+    return [this.x, this.y];
+  }
+
   toJSON(): { x: number; y: number } {
     return {
       x: this.x,

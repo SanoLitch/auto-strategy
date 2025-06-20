@@ -1,9 +1,16 @@
 model Building {
-  id        String @id @default(uuid())
-  player_id String @map("playerId")
-  type      String
+  id        String       @id @default(uuid())
+  player_id String       @map("playerId")
+  type      BuildingType
   position  Json
   path      Json?
 
   @@map("buildings")
+}
+
+enum BuildingType {
+  SPAWN
+  BARRACKS
+  MINE
+  SCOUT_POST
 }

@@ -2,12 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsUUID, IsEnum, IsDateString, IsOptional,
 } from 'class-validator';
-
-export enum GameSessionStatus {
-  WAITING = 'WAITING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  FINISHED = 'FINISHED',
-}
+import { GameSessionStatus } from '../domain/game-session.entity';
 
 export class GameSessionDto {
   @ApiProperty({
@@ -30,7 +25,7 @@ export class GameSessionDto {
   @ApiProperty({
     description: 'Current status of the game session',
     enum: GameSessionStatus,
-    example: GameSessionStatus.WAITING,
+    example: GameSessionStatus.Waiting,
   })
   @IsEnum(GameSessionStatus)
   status: GameSessionStatus;

@@ -31,7 +31,10 @@ export class MapMapper {
       id: map.getId(),
       size: map.size,
       terrainData: map.terrainData,
-      spawnPoints: map.spawnPoints,
+      spawnPoints: map.spawnPoints.map(({ point: [x, y] }) => ({
+        x,
+        y,
+      })),
     };
   }
 }
