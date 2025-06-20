@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  MapSize, TerrainType, SpawnPoint,
-} from '../domain/map.entity';
+  IsUUID, IsObject, IsArray, IsEnum,
+} from 'class-validator';
+import { TerrainType } from '../domain/map.entity';
 
 class MapSizeDto {
   @ApiProperty({
@@ -36,12 +37,14 @@ export class MapDto {
     description: 'Unique map identifier (UUID)',
     example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
   })
+  @IsUUID()
   id: string;
 
   @ApiProperty({
     description: 'Dimensions of the map',
     type: MapSizeDto,
   })
+  @IsObject()
   size: MapSizeDto;
 
   @ApiProperty({
@@ -61,14 +64,22 @@ export class MapDto {
     type: 'array',
     items: {
       type: 'array',
-      items: { type: 'string' },
+      items: {
+        type: 'string',
+        enum: Object.values(TerrainType),
+      },
     },
+    enum: Object.values(TerrainType),
   })
-  terrainData: any; // В DTO оставляем any для гибкости, но в Swagger описываем точно
+  @IsArray()
+  @IsArray({ each: true })
+  @IsEnum(TerrainType, { each: true })
+  terrainData: TerrainType[][];
 
   @ApiProperty({
     description: 'List of spawn points for players',
     type: [SpawnPointDto],
   })
+  @IsArray()
   spawnPoints: SpawnPointDto[];
 }

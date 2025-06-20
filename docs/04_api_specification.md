@@ -135,8 +135,13 @@
 |------|-----|----------|---------|
 | `id` | UUID | Уникальный идентификатор карты | `"a1b2c3d4-e5f6-7890-1234-567890abcdef"` |
 | `size` | Object | Размеры карты | `{"width": 100, "height": 100}` |
-| `terrainData` | Array | 2D массив типов местности | `[["Dirt", "Rock"], ["Bedrock", "Dirt"]]` |
+| `terrainData` | Array<Array<TerrainType>> | 2D массив типов местности | `[["Dirt", "Rock"], ["Bedrock", "Dirt"]]` |
 | `spawnPoints` | Array | Точки спавна игроков | `[{"x": 10, "y": 10}, {"x": 90, "y": 90}]` |
+
+**TerrainType enum:**
+- `"Dirt"` - Земля
+- `"Rock"` - Камень
+- `"Bedrock"` - Скальная порода
 
 ---
 
