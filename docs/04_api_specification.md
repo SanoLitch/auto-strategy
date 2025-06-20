@@ -10,49 +10,51 @@
 
 #### `POST /auth/register`
 
--   **Назначение:** Регистрация нового пользователя.
--   **Request Body (`application/json`):**
+- **Назначение:** Регистрация нового пользователя.
+- **Request Body (`application/json`):**
 
 | Поле | Тип | Описание | Обязательное |
 | --- | --- | --- | --- |
 | `email` | String | Email пользователя | Да |
 | `password`| String | Пароль (мин. 8 символов) | Да |
 
--   **Responses:**
-    -   **`201 Created`**: Пользователь успешно создан.
-    -   **`400 Bad Request`**: Ошибки валидации (например, невалидный email, короткий пароль).
-    -   **`409 Conflict`**: Пользователь с таким email уже существует.
+- **Responses:**
+  - **`201 Created`**: Пользователь успешно создан.
+  - **`400 Bad Request`**: Ошибки валидации (например, невалидный email, короткий пароль).
+  - **`409 Conflict`**: Пользователь с таким email уже существует.
 
 #### `POST /auth/login`
 
--   **Назначение:** Аутентификация пользователя и получение JWT токенов.
--   **Request Body (`application/json`):**
+- **Назначение:** Аутентификация пользователя и получение JWT токенов.
+- **Request Body (`application/json`):**
 
 | Поле | Тип | Описание | Обязательное |
 | --- | --- | --- | --- |
 | `email` | String | Email пользователя | Да |
 | `password`| String | Пароль | Да |
 
--   **Responses:**
-    -   **`200 OK`**: Успешная аутентификация.
-      - JWT-токены (`accessToken`, `refreshToken`) устанавливаются в cookie (httpOnly, sameSite=lax).
-      - Также возвращается тело:
+- **Responses:**
+  - **`200 OK`**: Успешная аутентификация.
+  - JWT-токены (`accessToken`, `refreshToken`) устанавливаются в cookie (httpOnly, sameSite=lax).
+  - Также возвращается тело:
+
       ```json
       {
         "accessToken": "your.jwt.token",
         "refreshToken": "your.jwt.token"
       }
       ```
-    -   **`401 Unauthorized`**: Неверные учетные данные.
+
+  - **`401 Unauthorized`**: Неверные учетные данные.
 
 #### `GET /auth/me`
 
--   **Назначение:** Получение информации о текущем аутентифицированном пользователе.
--   **Cookie:**
-    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
--   **Responses:**
-    -   **`200 OK`**: Данные пользователя.
-    -   **`401 Unauthorized`**: Неавторизованный запрос.
+- **Назначение:** Получение информации о текущем аутентифицированном пользователе.
+- **Cookie:**
+  - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
+- **Responses:**
+  - **`200 OK`**: Данные пользователя.
+  - **`401 Unauthorized`**: Неавторизованный запрос.
 
 ---
 
@@ -60,44 +62,44 @@
 
 #### `POST /games`
 
--   **Назначение:** Создать новую игровую сессию.
--   **Cookie:**
-    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
--   **Request Body (`application/json`):**
+- **Назначение:** Создать новую игровую сессию.
+- **Cookie:**
+  - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
+- **Request Body (`application/json`):**
 
 | Поле | Тип | Описание | Обязательное |
 | --- | --- | --- | --- |
 | `mapId` | UUID | Идентификатор карты для игры | Да |
 
--   **Responses:**
-    -   **`201 Created`**: Возвращает созданный объект `GameSession`.
+- **Responses:**
+  - **`201 Created`**: Возвращает созданный объект `GameSession`.
 
 #### `GET /games/{gameId}`
 
--   **Назначение:** Получить полное состояние указанной игровой сессии.
--   **Cookie:**
-    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
--   **Path Parameters:**
-    -   `gameId` (UUID): Идентификатор игровой сессии.
--   **Responses:**
-    -   **`200 OK`**: Возвращает объект с полным состоянием игры (игроки, здания, юниты, карта).
-    -   **`404 Not Found`**: Игра не найдена.
+- **Назначение:** Получить полное состояние указанной игровой сессии.
+- **Cookie:**
+  - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
+- **Path Parameters:**
+  - `gameId` (UUID): Идентификатор игровой сессии.
+- **Responses:**
+  - **`200 OK`**: Возвращает объект с полным состоянием игры (игроки, здания, юниты, карта).
+  - **`404 Not Found`**: Игра не найдена.
 
 #### `POST /games/{gameId}/buildings`
 
--   **Назначение:** Построить новое здание.
--   **Cookie:**
-    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
--   **Request Body (`application/json`):**
+- **Назначение:** Построить новое здание.
+- **Cookie:**
+  - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
+- **Request Body (`application/json`):**
 
 | Поле | Тип | Описание | Обязательное |
 | --- | --- | --- | --- |
 | `type` | Enum | Тип строящегося здания | Да |
 | `position`| JSON | Координаты `{"x": number, "y": number}` | Да |
 
--   **Responses:**
-    -   **`201 Created`**: Возвращает созданный объект `Building`.
-    -   **`400 Bad Request`**: Недостаточно ресурсов или неверное место для постройки.
+- **Responses:**
+  - **`201 Created`**: Возвращает созданный объект `Building`.
+  - **`400 Bad Request`**: Недостаточно ресурсов или неверное место для постройки.
 
 ---
 
@@ -107,18 +109,18 @@
 
 ### 2.1. События от сервера (Server -> Client)
 
--   `game_state_update`: Общее событие, которое может содержать батч изменений.
-    -   **Payload:** `{ units: [...], buildings: [...], players: [...] }`
--   `unit_spawned`: Появился новый юнит.
-    -   **Payload:** Объект `Unit`.
--   `unit_moved`: Юнит изменил свою позицию.
-    -   **Payload:** `{ unitId: UUID, newPosition: {x, y} }`
--   `resource_updated`: Изменилось количество ресурсов у игрока.
-    -   **Payload:** `{ playerId: UUID, resources: { gold, crystals } }`
--   `terrain_dug`: Был раскопан участок карты.
-    -   **Payload:** `{ position: {x, y} }`
--   `building_created`: Было построено новое здание.
-    -   **Payload:** Объект `Building`.
+- `game_state_update`: Общее событие, которое может содержать батч изменений.
+  - **Payload:** `{ units: [...], buildings: [...], players: [...] }`
+- `unit_spawned`: Появился новый юнит.
+  - **Payload:** Объект `Unit`.
+- `unit_moved`: Юнит изменил свою позицию.
+  - **Payload:** `{ unitId: UUID, newPosition: {x, y} }`
+- `resource_updated`: Изменилось количество ресурсов у игрока.
+  - **Payload:** `{ playerId: UUID, resources: { gold, crystals } }`
+- `terrain_dug`: Был раскопан участок карты.
+  - **Payload:** `{ position: {x, y} }`
+- `building_created`: Было построено новое здание.
+  - **Payload:** Объект `Building`.
 
 ### 2.2. События от клиента (Client -> Server)
 
