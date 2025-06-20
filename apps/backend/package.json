@@ -22,10 +22,11 @@
   },
   "dependencies": {
     "@libs/domain-primitives": "workspace:*",
-    "@libs/typescript-config": "workspace:*",
     "@libs/nest-jwt": "workspace:*",
+    "@libs/logger": "workspace:*",
+    "@libs/typescript-config": "workspace:*",
     "@nestjs/common": "^11.1.3",
-    "@nestjs/config": "^2.3.0",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.3",
     "@nestjs/event-emitter": "^3.0.1",
     "@nestjs/platform-express": "^11.1.3",
@@ -34,6 +35,7 @@
     "@prisma/client": "^6.10.1",
     "bcryptjs": "^3.0.2",
     "class-validator": "^0.14.2",
+    "nestjs-pino": "^4.4.0",
     "reflect-metadata": "^0.2.2",
     "socket.io": "^4.8.1",
     "rxjs": "^7.8.1"

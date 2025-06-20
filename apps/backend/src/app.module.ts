@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import {
+  ConfigModule, ConfigService,
+} from '@nestjs/config';
+import { LoggerModule } from '@libs/logger';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DbModule } from './db';
@@ -9,10 +12,15 @@ import { PlayerModule } from './player/player.module';
 import { BuildingModule } from './building/building.module';
 import { UnitModule } from './unit/unit.module';
 import { MapModule } from './map/map.module';
+import { AppConfig } from './config/env.validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<AppConfig>) => configService.get('NODE_ENV', 'development'),
+    }),
     DbModule,
     UserModule,
     GameSessionModule,

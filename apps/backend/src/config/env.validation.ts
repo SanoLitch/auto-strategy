@@ -3,4 +3,5 @@ export interface AppConfig {
   DATABASE_URL: string;
   ACCESS_TOKEN_EXPIRES_IN: string;
   REFRESH_TOKEN_EXPIRES_IN: string;
+  NODE_ENV?: 'production' | 'development' | string;
 }
