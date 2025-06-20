@@ -1,9 +1,10 @@
 import {
-  Controller, Get, Param, Logger,
+  Controller, Get, Param, Logger, UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags, ApiOperation, ApiResponse, ApiParam,
+  ApiTags, ApiOperation, ApiResponse, ApiParam, ApiCookieAuth,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@libs/nest-jwt';
 import { MapDto } from './map.dto';
 import { MapService } from '../domain/map.service';
 
@@ -14,7 +15,9 @@ export class MapController {
 
   constructor(private readonly mapService: MapService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get a map by ID' })
   @ApiParam({
     name: 'id',
@@ -26,6 +29,10 @@ export class MapController {
     status: 200,
     description: 'Returns the map details.',
     type: MapDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
   })
   @ApiResponse({
     status: 404,

@@ -1,9 +1,10 @@
 import {
-  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger,
+  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags, ApiOperation, ApiResponse, ApiParam,
+  ApiTags, ApiOperation, ApiResponse, ApiParam, ApiCookieAuth,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@libs/nest-jwt';
 import { GameSessionDto } from './game-session.dto';
 import { GameSessionService } from '../domain/game-session.service';
 
@@ -26,14 +27,20 @@ export class GameSessionController {
    * Создать новую игровую сессию (асинхронно).
    * @returns GameSessionDto
    */
+  @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Create a new game session' })
   @ApiResponse({
     status: 201,
     description: 'Game session created. Returns GameSessionDto with status GENERATING_MAP '
       + '(map is generated asynchronously).',
     type: GameSessionDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
   })
   async createGameSession(): Promise<GameSessionDto> {
     this.logger.log('POST /v1/games - create game session');
@@ -43,7 +50,9 @@ export class GameSessionController {
     return session;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get a game session by ID' })
   @ApiParam({
     name: 'id',
@@ -55,6 +64,10 @@ export class GameSessionController {
     status: 200,
     description: 'Returns the game session details.',
     type: GameSessionDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
   })
   @ApiResponse({
     status: 404,
