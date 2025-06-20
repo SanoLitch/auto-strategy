@@ -35,6 +35,8 @@
 
 -   **Responses:**
     -   **`200 OK`**: Успешная аутентификация.
+      - JWT-токены (`accessToken`, `refreshToken`) устанавливаются в cookie (httpOnly, sameSite=lax).
+      - Также возвращается тело:
       ```json
       {
         "accessToken": "your.jwt.token",
@@ -43,6 +45,15 @@
       ```
     -   **`401 Unauthorized`**: Неверные учетные данные.
 
+#### `GET /auth/me`
+
+-   **Назначение:** Получение информации о текущем аутентифицированном пользователе.
+-   **Cookie:**
+    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
+-   **Responses:**
+    -   **`200 OK`**: Данные пользователя.
+    -   **`401 Unauthorized`**: Неавторизованный запрос.
+
 ---
 
 ### 1.2. Игровые сессии (`/games`)
@@ -50,7 +61,8 @@
 #### `POST /games`
 
 -   **Назначение:** Создать новую игровую сессию.
--   **Headers:** `Authorization: Bearer <accessToken>`
+-   **Cookie:**
+    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
 -   **Request Body (`application/json`):**
 
 | Поле | Тип | Описание | Обязательное |
@@ -63,7 +75,8 @@
 #### `GET /games/{gameId}`
 
 -   **Назначение:** Получить полное состояние указанной игровой сессии.
--   **Headers:** `Authorization: Bearer <accessToken>`
+-   **Cookie:**
+    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
 -   **Path Parameters:**
     -   `gameId` (UUID): Идентификатор игровой сессии.
 -   **Responses:**
@@ -73,7 +86,8 @@
 #### `POST /games/{gameId}/buildings`
 
 -   **Назначение:** Построить новое здание.
--   **Headers:** `Authorization: Bearer <accessToken>`
+-   **Cookie:**
+    - `accessToken` — должен быть установлен в браузере (httpOnly cookie).
 -   **Request Body (`application/json`):**
 
 | Поле | Тип | Описание | Обязательное |

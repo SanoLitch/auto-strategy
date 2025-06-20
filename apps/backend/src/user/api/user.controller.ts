@@ -1,8 +1,10 @@
 import {
-  Controller, Post, Body, Get, Req, UseGuards,
+  Controller, Post, Body, Get, Req, UseGuards, Res,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { JwtAuthGuard } from '@libs/nest-jwt-guard';
+import {
+  Request, Response,
+} from 'express';
+import { JwtAuthGuard } from '@libs/nest-jwt';
 
 import { RegisterDto } from './register.dto';
 import { LoginDto } from './login.dto';
@@ -20,7 +22,9 @@ interface RequestWithUser extends Request {
  */
 @Controller('api/v1/users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+  ) { }
 
   /**
    * Регистрация нового пользователя.
@@ -34,8 +38,28 @@ export class UserController {
    * Авторизация пользователя.
    */
   @Post('login')
-  public async login(@Body() dto: LoginDto): Promise<{ accessToken: string; refreshToken: string; expiresIn: number }> {
-    return this.userService.login(dto);
+  public async login(
+    @Body() dto: LoginDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const {
+      access, refresh,
+    } = await this.userService.login(dto);
+
+    // Устанавливаем accessToken и refreshToken в cookie с их временем жизни
+    res.cookie('accessToken', access.token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      // secure: true, // включить на проде
+      maxAge: access.expiresIn * 1000,
+    });
+
+    res.cookie('refreshToken', refresh.token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      // secure: true, // включить на проде
+      maxAge: refresh.expiresIn * 1000,
+    });
   }
 
   /**

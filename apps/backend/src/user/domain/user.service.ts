@@ -1,9 +1,10 @@
 import {
   Injectable, UnauthorizedException, ConflictException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
-
+import {
+  TokenService, type TokenWithExpiry,
+} from '@libs/nest-jwt';
 import { User } from './user.entity';
 import { UserRepository } from '../db/user.repository';
 import { RegisterDto } from '../api/register.dto';
@@ -18,7 +19,7 @@ import { UserDto } from '../api/user.dto';
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
   ) { }
 
   /**
@@ -51,7 +52,7 @@ export class UserService {
   /**
    * Авторизация пользователя.
    */
-  public async login(dto: LoginDto): Promise<{ accessToken: string; refreshToken: string; expiresIn: number }> {
+  public async login(dto: LoginDto): Promise<{ access: TokenWithExpiry; refresh: TokenWithExpiry }> {
     try {
       const userPrisma = await this.userRepository.findByEmail(dto.email);
       const userEntity = UserMapper.toEntity(userPrisma);
@@ -65,13 +66,12 @@ export class UserService {
         email: userEntity.email,
         sub: userEntity.id,
       };
-      const accessToken = this.jwtService.sign(payload);
-      const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+      const access = this.tokenService.generateAccessToken(payload);
+      const refresh = this.tokenService.generateRefreshToken(payload);
 
       return {
-        accessToken,
-        refreshToken,
-        expiresIn: 3600, // as in documentation
+        access,
+        refresh,
       };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
@@ -96,6 +96,26 @@ export class UserService {
         throw new UnauthorizedException();
       }
       throw error;
+    }
+  }
+
+  /**
+   * Преобразует строку времени жизни токена в секунды.
+   */
+  private parseExpiresInToSeconds(expiresIn: string): number {
+    // Поддержка форматов: '3600', '1h', '7d', '30m', '10s'
+    const match = expiresIn.match(/^(\d+)([smhd]?)$/);
+
+    if (!match) return Number(expiresIn) || 3600;
+    const value = Number(match[1]);
+    const unit = match[2];
+
+    switch (unit) {
+    case 's': return value;
+    case 'm': return value * 60;
+    case 'h': return value * 3600;
+    case 'd': return value * 86400;
+    default: return value;
     }
   }
 }

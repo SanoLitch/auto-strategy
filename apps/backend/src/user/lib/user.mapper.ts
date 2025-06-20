@@ -11,7 +11,6 @@ import { UserDto } from '../api/user.dto';
 
 /**
  * Маппер для преобразования данных пользователя между слоями.
- * TODO: Реализовать методы преобразования.
  */
 export class UserMapper {
   public static toEntity(userPrisma: UserDb): UserDomain {
