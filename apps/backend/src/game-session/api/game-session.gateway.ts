@@ -10,7 +10,7 @@ import { GameSessionDto } from './game-session.dto';
 })
 export class GameSessionGateway {
   @WebSocketServer()
-  server: Server;
+  private readonly server: Server;
 
   public emitGameStateUpdate(gameId: string, state: GameSessionDto): void {
     this.server.to(gameId).emit('game_state_update', state);

@@ -13,14 +13,14 @@ export class MapSize {
     this.height = height;
   }
 
-  toJSON(): { width: number; height: number } {
+  public toJSON(): { width: number; height: number } {
     return {
       width: this.width,
       height: this.height,
     };
   }
 
-  static fromJSON(json: Prisma.JsonValue): MapSize {
+  public static fromJSON(json: Prisma.JsonValue): MapSize {
     const {
       width, height,
     } = json as Prisma.JsonObject;
@@ -38,18 +38,18 @@ export class SpawnPoint {
     this.y = y;
   }
 
-  get point() {
+  public get point() {
     return [this.x, this.y];
   }
 
-  toJSON(): { x: number; y: number } {
+  public toJSON(): { x: number; y: number } {
     return {
       x: this.x,
       y: this.y,
     };
   }
 
-  static fromJSON(json: Prisma.JsonValue): SpawnPoint {
+  public static fromJSON(json: Prisma.JsonValue): SpawnPoint {
     const {
       x, y,
     } = json as Prisma.JsonObject;
@@ -65,10 +65,10 @@ export enum TerrainType {
 }
 
 export class Map {
-  readonly id: Uuid;
-  readonly size: MapSize;
-  terrainData: TerrainType[][];
-  spawnPoints: SpawnPoint[];
+  public readonly id: Uuid;
+  public readonly size: MapSize;
+  public terrainData: TerrainType[][];
+  public spawnPoints: SpawnPoint[];
 
   constructor(params: {
     id: Uuid;
@@ -82,7 +82,7 @@ export class Map {
     this.spawnPoints = params.spawnPoints ?? [];
   }
 
-  generateTerrain(): void {
+  public generateTerrain(): void {
     const types = [
       TerrainType.Dirt,
       TerrainType.Rock,
@@ -94,7 +94,7 @@ export class Map {
         types[Math.floor(Math.random() * types.length)] as TerrainType));
   }
 
-  generateSpawnPoints(playersCount: number): void {
+  public generateSpawnPoints(playersCount: number): void {
     const points: SpawnPoint[] = [];
 
     if (playersCount >= 1) points.push(new SpawnPoint(1, 1));

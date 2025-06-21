@@ -1,13 +1,15 @@
+import { Uuid } from '@libs/domain-primitives';
+
 export class Building {
-  readonly id: string;
-  readonly playerId: string;
-  readonly type: string;
-  readonly position: Record<string, number>;
-  readonly path?: Record<string, number>[];
+  public readonly id: Uuid;
+  public readonly playerId: Uuid;
+  public readonly type: string;
+  public readonly position: Record<string, number>;
+  public readonly path?: Record<string, number>[];
 
   constructor(params: {
-    id: string;
-    playerId: string;
+    id: Uuid;
+    playerId: Uuid;
     type: string;
     position: Record<string, number>;
     path?: Record<string, number>[];

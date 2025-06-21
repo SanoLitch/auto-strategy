@@ -6,7 +6,7 @@ import { DbService } from '../../core/db/db.service';
 export class MapRepository {
   constructor(private readonly db: DbService) { }
 
-  async createMap(gameSessionId: string, data: Partial<MapDb>): Promise<MapDb> {
+  public async createMap(gameSessionId: string, data: Partial<MapDb>): Promise<MapDb> {
     return this.db.map.create({
       data: {
         game_session: gameSessionId,
@@ -17,7 +17,7 @@ export class MapRepository {
     });
   }
 
-  async findMapById(id: string): Promise<MapDb | null> {
+  public async findMapById(id: string): Promise<MapDb | null> {
     return this.db.map.findUniqueOrThrow({ where: { id } });
   }
 }

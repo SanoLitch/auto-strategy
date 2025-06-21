@@ -1,15 +1,17 @@
+import { Uuid } from '@libs/domain-primitives';
+
 export class Unit {
-  readonly id: string;
-  readonly playerId: string;
-  readonly buildingId: string;
-  readonly type: string;
-  readonly position: Record<string, number>;
-  readonly health: number;
+  public readonly id: Uuid;
+  public readonly playerId: Uuid;
+  public readonly buildingId: Uuid;
+  public readonly type: string;
+  public readonly position: Record<string, number>;
+  public readonly health: number;
 
   constructor(params: {
-    id: string;
-    playerId: string;
-    buildingId: string;
+    id: Uuid;
+    playerId: Uuid;
+    buildingId: Uuid;
     type: string;
     position: Record<string, number>;
     health: number;

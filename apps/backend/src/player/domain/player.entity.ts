@@ -2,11 +2,11 @@ import { Uuid } from '@libs/domain-primitives';
 import { InsufficientResourcesError } from '@libs/utils';
 
 export class Player {
-  readonly id: Uuid;
-  readonly userId: Uuid;
-  readonly gameSessionId: Uuid;
-  readonly resources: Readonly<Record<string, number>>;
-  readonly isWinner: boolean;
+  public readonly id: Uuid;
+  public readonly userId: Uuid;
+  public readonly gameSessionId: Uuid;
+  public readonly resources: Readonly<Record<string, number>>;
+  public readonly isWinner: boolean;
 
   constructor(params: {
     id: Uuid;
@@ -22,7 +22,7 @@ export class Player {
     this.isWinner = params.isWinner ?? false;
   }
 
-  static create(params: {
+  public static create(params: {
     userId: Uuid;
     gameSessionId: Uuid;
     initialResources?: Record<string, number>;

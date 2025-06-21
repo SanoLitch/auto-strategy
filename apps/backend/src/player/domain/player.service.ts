@@ -20,7 +20,7 @@ export class PlayerService {
   ) {}
 
   @OnEvent('player.joining')
-  async handlePlayerCreateRequest(
+  public async handlePlayerCreateRequest(
     payload: { userId: string; gameSessionId: string },
   ): Promise<void> {
     const {

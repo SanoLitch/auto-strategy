@@ -38,14 +38,14 @@ export class MapController {
     status: 404,
     description: 'Map not found.',
   })
-  async getMapById(@Param('id') id: string): Promise<MapDto> {
+  public async getMapById(@Param('id') id: string): Promise<MapDto> {
     this.logger.log(`GET /v1/maps/${ id }`);
     return this.mapService.getMapById(id);
   }
 
   @Get('admin/test')
   @ApiOperation({ summary: 'Test endpoint for Map module' })
-  test(): string {
+  public test(): string {
     this.logger.log('GET /v1/maps/admin/test');
     return 'Map module is working';
   }

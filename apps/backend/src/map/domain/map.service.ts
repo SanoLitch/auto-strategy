@@ -31,7 +31,7 @@ export class MapService {
   ) { }
 
   @OnEvent('map.generate')
-  async handleMapGenerateEvent(payload: MapGenerateEventPayload) {
+  public async handleMapGenerateEvent(payload: MapGenerateEventPayload): Promise<void> {
     this.logger.log(`Handle map.generate event:
     sessionId=${ payload.sessionId },
     size=${ JSON.stringify(payload.size) },
@@ -70,7 +70,7 @@ export class MapService {
     this.logger.log(`Map generated and saved for sessionId=${ payload.sessionId }`);
   }
 
-  async getMapById(id: string): Promise<MapDto> {
+  public async getMapById(id: string): Promise<MapDto> {
     this.logger.log(`Get map by id: ${ id }`);
 
     const mapDb = await this.mapRepository.findMapById(id);

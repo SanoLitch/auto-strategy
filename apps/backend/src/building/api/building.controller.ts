@@ -5,7 +5,7 @@ import {
 @Controller('building')
 export class BuildingController {
   @Get('admin/test')
-  test(): string {
+  public test(): string {
     return 'Building module is working';
   }
 }

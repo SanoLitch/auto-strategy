@@ -8,7 +8,7 @@ import {
 import { MapDto } from '../api/map.dto';
 
 export class MapMapper {
-  static toEntity(mapDb: MapDb): Map {
+  public static toEntity(mapDb: MapDb): Map {
     return new Map({
       id: new Uuid(mapDb.id),
       size: MapSize.fromJSON(mapDb.size),
@@ -17,7 +17,7 @@ export class MapMapper {
     });
   }
 
-  static toPersistence(map: Map): Partial<MapDb> {
+  public static toPersistence(map: Map): Partial<MapDb> {
     return {
       id: map.id.getValue(),
       size: map.size.toJSON(),
@@ -26,7 +26,7 @@ export class MapMapper {
     };
   }
 
-  static toDto(map: Map): MapDto {
+  public static toDto(map: Map): MapDto {
     return {
       id: map.id.getValue(),
       size: map.size,

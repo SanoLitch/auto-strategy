@@ -21,7 +21,7 @@ export class GameSessionService {
     private readonly gameSessionRepository: GameSessionRepository,
   ) { }
 
-  async createGameSession(): Promise<GameSessionDto> {
+  public async createGameSession(): Promise<GameSessionDto> {
     this.logger.log('Create new game session');
 
     const session = GameSession.create();
@@ -38,7 +38,7 @@ export class GameSessionService {
   }
 
   @OnEvent('map.generated')
-  async handleMapGenerated({
+  public async handleMapGenerated({
     sessionId, mapId,
   }: { sessionId: string; mapId: string }): Promise<void> {
     this.logger.log(`Update session after map generated: sessionId=${ sessionId }, mapId=${ mapId }`);
@@ -54,7 +54,7 @@ export class GameSessionService {
     this.onGameSessionChanged(sessionId);
   }
 
-  async requestToJoinSession(userId: string, sessionId: string): Promise<void> {
+  public async requestToJoinSession(userId: string, sessionId: string): Promise<void> {
     this.logger.log(`User ${ userId } requesting to join session ${ sessionId }`);
 
     const sessionDb = await this.gameSessionRepository.findById(sessionId);
@@ -71,13 +71,13 @@ export class GameSessionService {
   }
 
   @OnEvent('player.created')
-  async handlePlayerCreated(sessionId: string): Promise<void> {
+  public async handlePlayerCreated(sessionId: string): Promise<void> {
     this.logger.log(`Received player.created event for session ${ sessionId }. Triggering update.`);
 
     await this.onGameSessionChanged(sessionId);
   }
 
-  async getGameSessionById(sessionId: string): Promise<GameSessionDto> {
+  public async getGameSessionById(sessionId: string): Promise<GameSessionDto> {
     this.logger.log(`Get game session by id: ${ sessionId }`);
 
     const sessionDb = await this.gameSessionRepository.findById(sessionId);
@@ -87,7 +87,7 @@ export class GameSessionService {
   }
 
   @OnEvent('game-session.changed')
-  async onGameSessionChanged(sessionId: string): Promise<void> {
+  public async onGameSessionChanged(sessionId: string): Promise<void> {
     this.logger.log(`Game session changed: sessionId=${ sessionId }`);
 
     const dto = await this.getGameSessionById(sessionId);

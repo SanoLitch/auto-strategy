@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 export class DbService extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger(DbService.name);
 
-  async onModuleInit() {
+  public async onModuleInit(): Promise<void> {
     this.logger.log('Connecting to database...');
 
     try {

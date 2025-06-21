@@ -9,13 +9,13 @@ class MapSizeDto {
     description: 'Width of the map',
     example: 100,
   })
-  width: number;
+  public width: number;
 
   @ApiProperty({
     description: 'Height of the map',
     example: 100,
   })
-  height: number;
+  public height: number;
 }
 
 class SpawnPointDto {
@@ -23,13 +23,13 @@ class SpawnPointDto {
     description: 'X coordinate of the spawn point',
     example: 10,
   })
-  x: number;
+  public x: number;
 
   @ApiProperty({
     description: 'Y coordinate of the spawn point',
     example: 10,
   })
-  y: number;
+  public y: number;
 }
 
 export class MapDto {
@@ -38,14 +38,14 @@ export class MapDto {
     example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
   })
   @IsUUID()
-  id: string;
+  public id: string;
 
   @ApiProperty({
     description: 'Dimensions of the map',
     type: MapSizeDto,
   })
   @IsObject()
-  size: MapSizeDto;
+  public size: MapSizeDto;
 
   @ApiProperty({
     description: '2D array representing the map terrain',
@@ -74,12 +74,12 @@ export class MapDto {
   @IsArray()
   @IsArray({ each: true })
   @IsEnum(TerrainType, { each: true })
-  terrainData: TerrainType[][];
+  public terrainData: TerrainType[][];
 
   @ApiProperty({
     description: 'List of spawn points for players',
     type: [SpawnPointDto],
   })
   @IsArray()
-  spawnPoints: SpawnPointDto[];
+  public spawnPoints: SpawnPointDto[];
 }

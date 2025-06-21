@@ -9,21 +9,21 @@ export class PlayerDto {
     example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
   })
   @IsUUID()
-  id: string;
+  public id: string;
 
   @ApiProperty({
     description: 'ID of the user associated with this player',
     example: 'b2c3d4e5-f6a7-8901-2345-67890abcdef1',
   })
   @IsUUID()
-  userId: string;
+  public userId: string;
 
   @ApiProperty({
     description: 'ID of the game session this player belongs to',
     example: 'c3d4e5f6-a7b8-9012-3456-7890abcdef12',
   })
   @IsUUID()
-  gameSessionId: string;
+  public gameSessionId: string;
 
   @ApiProperty({
     description: 'A record of player resources',
@@ -35,7 +35,7 @@ export class PlayerDto {
     additionalProperties: { type: 'number' },
   })
   @IsObject()
-  resources: Record<string, number>;
+  public resources: Record<string, number>;
 
   @ApiProperty({
     description: 'Indicates if the player is the winner',
@@ -44,5 +44,5 @@ export class PlayerDto {
   })
   @IsOptional()
   @IsBoolean()
-  isWinner?: boolean;
+  public isWinner?: boolean;
 }

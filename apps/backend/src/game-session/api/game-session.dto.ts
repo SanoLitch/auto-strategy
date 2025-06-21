@@ -10,7 +10,7 @@ export class GameSessionDto {
     example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
   })
   @IsUUID()
-  id: string;
+  public id: string;
 
   @ApiProperty({
     description: 'Identifier of the map for this session (UUID)',
@@ -20,7 +20,7 @@ export class GameSessionDto {
   })
   @IsUUID()
   @IsOptional()
-  mapId: string | null;
+  public mapId: string | null;
 
   @ApiProperty({
     description: 'Current status of the game session',
@@ -28,14 +28,14 @@ export class GameSessionDto {
     example: GameSessionStatus.Waiting,
   })
   @IsEnum(GameSessionStatus)
-  status: GameSessionStatus;
+  public status: GameSessionStatus;
 
   @ApiProperty({
     description: 'When the game session was created',
     example: '2023-10-27T10:00:00.000Z',
   })
   @IsDateString()
-  createdAt: string;
+  public createdAt: string;
 
   @ApiProperty({
     description: 'When the game session was finished',
@@ -45,5 +45,5 @@ export class GameSessionDto {
   })
   @IsDateString()
   @IsOptional()
-  finishedAt: string | null;
+  public finishedAt: string | null;
 }

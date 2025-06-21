@@ -19,10 +19,10 @@ export enum GameSessionStatus {
 }
 
 export class GameSession {
-  readonly id: Uuid;
-  status: GameSessionStatus;
-  readonly createdAt: Date;
-  finishedAt?: Date;
+  public readonly id: Uuid;
+  public status: GameSessionStatus;
+  public readonly createdAt: Date;
+  public finishedAt?: Date;
 
   private _map: Map | null;
   private _players: Player[];
@@ -43,19 +43,19 @@ export class GameSession {
     this.finishedAt = params.finishedAt;
   }
 
-  get mapId(): Uuid | null {
+  public get mapId(): Uuid | null {
     return this._map?.id ?? null;
   }
 
-  get players(): readonly Player[] {
+  public get players(): readonly Player[] {
     return this._players;
   }
 
-  get map(): Readonly<Map> | null {
+  public get map(): Readonly<Map> | null {
     return this._map;
   }
 
-  static create(): GameSession {
+  public static create(): GameSession {
     return new GameSession({
       id: new Uuid(),
       status: GameSessionStatus.GeneratingMap,

@@ -16,7 +16,7 @@ export class PlayerController {
 
   @Get('admin/test')
   @ApiOperation({ summary: 'Test endpoint for Player module' })
-  test(): string {
+  public test(): string {
     this.logger.log('GET /v1/players/admin/test');
 
     return 'Player module is working';

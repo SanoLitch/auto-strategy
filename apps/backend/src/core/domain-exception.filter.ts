@@ -23,29 +23,29 @@ import {
   SessionMapSetInWrongStatusError,
 } from '@libs/utils';
 
+const exceptionToStatusMap = new Map<DomainExceptionConstructor, HttpStatus>([
+  [UserAlreadyExistsError, HttpStatus.CONFLICT],
+  [PlayerAlreadyJoinedError, HttpStatus.CONFLICT],
+  [SessionIsFullError, HttpStatus.CONFLICT],
+  [SessionNotWaitingError, HttpStatus.BAD_REQUEST],
+  [MapNotGeneratedError, HttpStatus.BAD_REQUEST],
+  [InsufficientResourcesError, HttpStatus.BAD_REQUEST],
+  [SessionIsEmptyError, HttpStatus.BAD_REQUEST],
+  [SessionStartInWrongStatusError, HttpStatus.BAD_REQUEST],
+  [SessionMapSetInWrongStatusError, HttpStatus.BAD_REQUEST],
+] as const);
+
 @Catch(DomainException)
 export class DomainExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(DomainExceptionFilter.name);
 
-  private readonly exceptionToStatusMap = new Map<DomainExceptionConstructor, HttpStatus>([
-    [UserAlreadyExistsError, HttpStatus.CONFLICT],
-    [PlayerAlreadyJoinedError, HttpStatus.CONFLICT],
-    [SessionIsFullError, HttpStatus.CONFLICT],
-    [SessionNotWaitingError, HttpStatus.BAD_REQUEST],
-    [MapNotGeneratedError, HttpStatus.BAD_REQUEST],
-    [InsufficientResourcesError, HttpStatus.BAD_REQUEST],
-    [SessionIsEmptyError, HttpStatus.BAD_REQUEST],
-    [SessionStartInWrongStatusError, HttpStatus.BAD_REQUEST],
-    [SessionMapSetInWrongStatusError, HttpStatus.BAD_REQUEST],
-  ] as const);
-
-  catch(exception: DomainException, host: ArgumentsHost) {
+  public catch(exception: DomainException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
     const status = isDomainExceptionConstructor(exception.constructor)
-      ? this.exceptionToStatusMap.get(exception.constructor)
+      ? exceptionToStatusMap.get(exception.constructor)
       : HttpStatus.INTERNAL_SERVER_ERROR;
 
     this.logger.warn(

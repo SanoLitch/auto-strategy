@@ -5,7 +5,7 @@ import {
 @Controller('unit')
 export class UnitController {
   @Get('admin/test')
-  test(): string {
+  public test(): string {
     return 'Unit module is working';
   }
 }

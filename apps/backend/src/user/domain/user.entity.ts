@@ -3,11 +3,11 @@ import {
 } from '@libs/domain-primitives';
 
 export class User {
-  readonly id: Uuid;
-  readonly email: string;
-  readonly passwordHash: PasswordHash;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  public readonly id: Uuid;
+  public readonly email: string;
+  public readonly passwordHash: PasswordHash;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
 
   constructor(params: {
     id: Uuid;

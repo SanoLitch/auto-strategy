@@ -14,7 +14,7 @@ class CreateMapSizeDto {
   @IsPositive()
   @Min(10)
   @Max(1000)
-  width: number;
+  public width: number;
 
   @ApiProperty({
     description: 'Height of the map',
@@ -26,7 +26,7 @@ class CreateMapSizeDto {
   @IsPositive()
   @Min(10)
   @Max(1000)
-  height: number;
+  public height: number;
 }
 
 export class CreateMapDto {
@@ -35,7 +35,7 @@ export class CreateMapDto {
     type: CreateMapSizeDto,
   })
   @IsObject()
-  size: CreateMapSizeDto;
+  public size: CreateMapSizeDto;
 
   @ApiProperty({
     description: 'Number of players for this map',
@@ -47,5 +47,5 @@ export class CreateMapDto {
   @IsPositive()
   @Min(1)
   @Max(8)
-  playersCount: number;
+  public playersCount: number;
 }

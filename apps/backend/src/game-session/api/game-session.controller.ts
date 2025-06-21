@@ -24,7 +24,7 @@ export class GameSessionController {
 
   @Get('admin/test')
   @ApiOperation({ summary: 'Test endpoint for GameSession module' })
-  test(): string {
+  public test(): string {
     this.logger.log('GET /v1/games/admin/test');
 
     return 'GameSession module is working';
@@ -45,7 +45,7 @@ export class GameSessionController {
     status: 401,
     description: 'Unauthorized.',
   })
-  async createGameSession(): Promise<GameSessionDto> {
+  public async createGameSession(): Promise<GameSessionDto> {
     this.logger.log('POST /v1/games - create game session');
 
     const session = await this.gameSessionService.createGameSession();
@@ -78,7 +78,7 @@ export class GameSessionController {
     status: 409,
     description: 'Conflict. Session is full or not accepting new players.',
   })
-  async joinGameSession(
+  public async joinGameSession(
     @Param('id') sessionId: string,
     @Req() req: RequestWithUser,
   ): Promise<void> {
@@ -112,7 +112,7 @@ export class GameSessionController {
     status: 404,
     description: 'Game session not found.',
   })
-  async getGameSession(@Param('id') id: string): Promise<GameSessionDto> {
+  public async getGameSession(@Param('id') id: string): Promise<GameSessionDto> {
     this.logger.log(`GET /v1/games/${ id }`);
 
     const session = await this.gameSessionService.getGameSessionById(id);
