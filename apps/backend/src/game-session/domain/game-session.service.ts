@@ -10,7 +10,9 @@ import { GameSessionRepository } from '../db/game-session.repository';
 import { GameSessionMapper } from '../lib/game-session.mapper';
 import { GameSessionDto } from '../api/game-session.dto';
 import { GameSessionGateway } from '../api/game-session.gateway';
-import { MapSize } from '../../map';
+import {
+  AppEventNames, AppEvents,
+} from '../../core';
 
 @Injectable()
 export class GameSessionService {
@@ -33,16 +35,19 @@ export class GameSessionService {
     this.logger.log(`Game session created: id=${ session.id.getValue() }`);
     this.logger.log(`Emit map.generate event for sessionId=${ session.id.getValue() }`);
 
-    this.eventEmitter.emit('map.generate', {
+    this.eventEmitter.emit(AppEventNames.MAP_GENERATE, {
       sessionId: session.id.getValue(),
-      size: new MapSize(size, size).toJSON(),
+      size: {
+        width: size,
+        height: size,
+      },
       playersCount,
-    });
+    } satisfies AppEvents[AppEventNames.MAP_GENERATE]);
 
     return GameSessionMapper.toDto(session);
   }
 
-  @OnEvent('map.generated')
+  @OnEvent(AppEventNames.MAP_GENERATED)
   public async handleMapGenerated(sessionId: string, mapId: string): Promise<void> {
     this.logger.log(`Update session after map generated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
@@ -67,13 +72,13 @@ export class GameSessionService {
 
     this.logger.log(`Session validated for joining. Emitting player.joining for user ${ userId }`);
 
-    this.eventEmitter.emit('player.joining', {
+    this.eventEmitter.emit(AppEventNames.PLAYER_JOINING, {
       userId,
       gameSessionId: sessionId,
-    });
+    } satisfies AppEvents[AppEventNames.PLAYER_JOINING]);
   }
 
-  @OnEvent('player.created')
+  @OnEvent(AppEventNames.PLAYER_CREATED)
   public async handlePlayerCreated(sessionId: string): Promise<void> {
     this.logger.log(`Received player.created event for session ${ sessionId }. Triggering update.`);
 
@@ -89,7 +94,7 @@ export class GameSessionService {
     return GameSessionMapper.toDto(session);
   }
 
-  @OnEvent('game-session.changed')
+  @OnEvent(AppEventNames.GAME_SESSION_CHANGED)
   public async onGameSessionChanged(sessionId: string): Promise<void> {
     this.logger.log(`Game session changed: sessionId=${ sessionId }`);
 

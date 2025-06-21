@@ -1,19 +1,17 @@
 import {
   Injectable, Logger,
 } from '@nestjs/common';
-import { Uuid } from '@libs/domain-primitives';
 import {
   EventEmitter2, OnEvent,
 } from '@nestjs/event-emitter';
 import { Worker } from 'worker_threads';
 import {
-  Map, MapSize,
-  SpawnPoint,
   TerrainType,
 } from './map.entity';
 import { MapRepository } from '../db/map.repository';
 import { MapDto } from '../api/map.dto';
 import { MapMapper } from '../lib/map.mapper';
+import { AppEventNames } from '../../core';
 
 interface MapGenerateEventPayload {
   sessionId: string;
@@ -30,7 +28,7 @@ export class MapService {
     private readonly eventEmitter: EventEmitter2,
   ) { }
 
-  @OnEvent('map.generate')
+  @OnEvent(AppEventNames.MAP_GENERATE)
   public async handleMapGenerateEvent(payload: MapGenerateEventPayload): Promise<void> {
     const {
       sessionId, playersCount, size,
@@ -73,7 +71,7 @@ export class MapService {
     });
     const mapDb = await this.mapRepository.createMap(MapMapper.toPersistence(map, payload.sessionId));
 
-    this.eventEmitter.emit('map.generated', payload.sessionId, mapDb.id);
+    this.eventEmitter.emit(AppEventNames.MAP_GENERATED, payload.sessionId, mapDb.id);
 
     this.logger.log(`Map generated and saved for sessionId=${ payload.sessionId }`);
   }

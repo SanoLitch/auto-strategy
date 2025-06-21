@@ -9,6 +9,9 @@ import { Player } from './player.entity';
 import { PlayerRepository } from '../db/player.repository';
 import { PlayerMapper } from '../lib/player.mapper';
 import { PlayerDto } from '../api/player.dto';
+import {
+  AppEventNames, AppEvents,
+} from '../../core';
 
 @Injectable()
 export class PlayerService {
@@ -19,7 +22,7 @@ export class PlayerService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  @OnEvent('player.joining')
+  @OnEvent(AppEventNames.PLAYER_JOINING)
   public async handlePlayerCreateRequest(
     payload: { userId: string; gameSessionId: string },
   ): Promise<void> {
@@ -55,7 +58,7 @@ export class PlayerService {
 
     this.logger.log(`Player created: id=${ playerDb.id }`);
 
-    this.eventEmitter.emit('player.created', gameSessionId);
+    this.eventEmitter.emit(AppEventNames.PLAYER_CREATED, gameSessionId);
   }
 
   public async getById(id: string): Promise<PlayerDto> {
