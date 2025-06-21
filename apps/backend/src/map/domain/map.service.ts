@@ -58,7 +58,7 @@ export class MapService {
       terrainData: result.terrainData,
       spawnPoints: result.spawnPoints,
     });
-    const mapDb = await this.mapRepository.createMap(MapMapper.toPersistence(map));
+    const mapDb = await this.mapRepository.createMap(payload.sessionId, MapMapper.toPersistence(map));
 
     this.eventEmitter.emit('map.generated', new Uuid(payload.sessionId), new Uuid(mapDb.id));
     this.logger.log(`Map generated and saved for sessionId=${ payload.sessionId }`);

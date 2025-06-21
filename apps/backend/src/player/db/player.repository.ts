@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import {
-  Prisma, Player as PlayerDb,
-} from '@prisma/client';
+import { Player as PlayerDb } from '@prisma/client';
 import { DbService } from '../../core';
 
 @Injectable()
 export class PlayerRepository {
   constructor(private readonly db: DbService) {}
 
-  public async create(data: Prisma.PlayerCreateInput): Promise<PlayerDb> {
+  public async create(data: PlayerDb): Promise<PlayerDb> {
     return this.db.player.create({ data });
   }
 

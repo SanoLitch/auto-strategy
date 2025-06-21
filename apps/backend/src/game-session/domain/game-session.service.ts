@@ -24,7 +24,6 @@ export class GameSessionService {
     this.logger.log('Create new game session');
 
     const sessionDb = await this.gameSessionRepository.create({
-      map_id: null,
       status: GameSessionStatus.GeneratingMap,
       created_at: new Date(),
     });
@@ -42,7 +41,6 @@ export class GameSessionService {
     this.logger.log(`Update session after map generated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
     await this.gameSessionRepository.update(sessionId, {
-      map_id: mapId,
       status: GameSessionStatus.Waiting,
     });
 

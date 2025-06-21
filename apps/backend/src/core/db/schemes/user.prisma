@@ -4,6 +4,7 @@ model User {
   password_hash String   @map("passwordHash")
   created_at    DateTime @default(now()) @map("createdAt")
   updated_at    DateTime @updatedAt @map("updatedAt")
+  players       Player[]
 
   @@map("users")
 }

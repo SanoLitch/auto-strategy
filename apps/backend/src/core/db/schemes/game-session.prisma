@@ -1,15 +1,18 @@
+enum GameSessionStatus {
+  WAITING
+  GENERATING_MAP
+  IN_PROGRESS
+  FINISHED
+}
+
 model GameSession {
   id          String            @id @default(uuid())
   map_id      String?           @map("mapId")
   status      GameSessionStatus
   created_at  DateTime          @default(now()) @map("createdAt")
   finished_at DateTime?         @map("finishedAt")
+  players     Player[]
+  map         Map?              @relation(fields: [map_id], references: [id])
 
   @@map("game_sessions")
-}
-
-enum GameSessionStatus {
-  WAITING
-  IN_PROGRESS
-  FINISHED
 }

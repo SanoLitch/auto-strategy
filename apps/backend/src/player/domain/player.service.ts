@@ -31,7 +31,7 @@ export class PlayerService {
       userId,
       gameSessionId,
     });
-    const dbModel = await this.playerRepository.create(PlayerMapper.toCreateInput(entity));
+    const dbModel = await this.playerRepository.create(PlayerMapper.toPersistence(entity));
 
     this.eventEmitter.emit('game-session.changed', gameSessionId);
 

@@ -1,16 +1,18 @@
+enum BuildingType {
+  SPAWN
+  BARRACKS
+  MINE
+  SCOUT_POST
+}
+
 model Building {
   id        String       @id @default(uuid())
   player_id String       @map("playerId")
   type      BuildingType
   position  Json
   path      Json?
+  player    Player       @relation(fields: [player_id], references: [id])
+  units     Unit[]
 
   @@map("buildings")
-}
-
-enum BuildingType {
-  SPAWN
-  BARRACKS
-  MINE
-  SCOUT_POST
 }

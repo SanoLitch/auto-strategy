@@ -25,17 +25,7 @@ export class PlayerMapper {
     };
   }
 
-  public static toPersistence(entity: Player): Partial<PlayerDb> {
-    return {
-      id: entity.id,
-      user_id: entity.userId,
-      game_session_id: entity.gameSessionId,
-      resources: entity.resources,
-      is_winner: entity.isWinner,
-    };
-  }
-
-  public static toCreateInput(entity: Player): Prisma.PlayerCreateInput {
+  public static toPersistence(entity: Player): PlayerDb {
     return {
       id: entity.id,
       user_id: entity.userId,

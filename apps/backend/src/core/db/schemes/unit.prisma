@@ -5,6 +5,8 @@ model Unit {
   type        UnitType
   position    Json
   health      Int
+  player      Player   @relation(fields: [player_id], references: [id])
+  building    Building @relation(fields: [building_id], references: [id])
 
   @@map("units")
 }
