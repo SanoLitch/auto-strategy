@@ -32,7 +32,10 @@ export class MapService {
 
   @OnEvent('map.generate')
   async handleMapGenerateEvent(payload: MapGenerateEventPayload) {
-    this.logger.log(`Handle map.generate event: sessionId=${ payload.sessionId }, size=${ JSON.stringify(payload.size) }, playersCount=${ payload.playersCount }`);
+    this.logger.log(`Handle map.generate event:
+    sessionId=${ payload.sessionId },
+    size=${ JSON.stringify(payload.size) },
+    playersCount=${ payload.playersCount }`);
 
     const worker = new Worker(
       require.resolve('../lib/map-generation.worker'),
@@ -48,7 +51,9 @@ export class MapService {
       worker.on('message', resolve);
       worker.on('error', reject);
       worker.on('exit', code => {
-        if (code !== 0) reject(new Error(`Worker stopped with code ${ code }`));
+        if (code !== 0) {
+          reject(new Error(`Worker stopped with code ${ code }`));
+        };
       });
     });
 
@@ -61,6 +66,7 @@ export class MapService {
     const mapDb = await this.mapRepository.createMap(payload.sessionId, MapMapper.toPersistence(map));
 
     this.eventEmitter.emit('map.generated', new Uuid(payload.sessionId), new Uuid(mapDb.id));
+
     this.logger.log(`Map generated and saved for sessionId=${ payload.sessionId }`);
   }
 

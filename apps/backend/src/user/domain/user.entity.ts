@@ -37,11 +37,6 @@ export class User {
     });
   }
 
-  /**
-   * Проверяет, соответствует ли переданный пароль хешу пароля пользователя.
-   * @param password - Пароль для проверки.
-   * @returns Promise<boolean> - true, если пароль совпадает, иначе false.
-   */
   public async isPasswordMatching(password: string): Promise<boolean> {
     return this.passwordHash.compare(password);
   }

@@ -31,6 +31,17 @@
       "cache": false,
       "persistent": true
     },
+    "start:back": {
+      "dependsOn": [
+        "^prisma:generate",
+        "^pipeline:build"
+      ],
+      "with": [
+        "backend#start:dev"
+      ],
+      "cache": false,
+      "persistent": true
+    },
     "prisma:generate": {
       "with": [
         "backend#prisma:generate"

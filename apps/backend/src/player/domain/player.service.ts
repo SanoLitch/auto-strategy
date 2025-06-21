@@ -1,7 +1,10 @@
 import {
-  Injectable, ConflictException, Logger,
+  Injectable, Logger,
 } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import {
+  EventEmitter2, OnEvent,
+} from '@nestjs/event-emitter';
+import { Uuid } from '@libs/domain-primitives';
 import { Player } from './player.entity';
 import { PlayerRepository } from '../db/player.repository';
 import { PlayerMapper } from '../lib/player.mapper';
@@ -10,38 +13,55 @@ import { PlayerDto } from '../api/player.dto';
 @Injectable()
 export class PlayerService {
   private readonly logger = new Logger(PlayerService.name);
+
   constructor(
     private readonly playerRepository: PlayerRepository,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async createPlayer(userId: string, gameSessionId: string): Promise<PlayerDto> {
-    this.logger.log(`Create player: userId=${ userId }, gameSessionId=${ gameSessionId }`);
+  @OnEvent('player.joining')
+  async handlePlayerCreateRequest(
+    payload: { userId: string; gameSessionId: string },
+  ): Promise<void> {
+    const {
+      userId, gameSessionId,
+    } = payload;
+
+    this.logger.log(
+      `Handling player.joining: userId=${ userId }, gameSessionId=${ gameSessionId }`,
+    );
 
     try {
       await this.playerRepository.findByUserAndSession(userId, gameSessionId);
 
-      this.logger.warn(`Player already exists: userId=${ userId }, gameSessionId=${ gameSessionId }`);
+      this.logger.warn(
+        `Player already exists, ignoring creation request: userId=${ userId }, gameSessionId=${ gameSessionId }`,
+      );
 
-      throw new ConflictException('Player already exists in this session');
+      return;
     } catch (err) {
-      // Ожидаемое поведение: не найден — создаём
+      this.logger.log(
+        `Player not found, can join to gameSessionId=${ gameSessionId }`,
+      );
     }
-    const entity = Player.create({
-      userId,
-      gameSessionId,
+
+    const playerEntity = Player.create({
+      userId: new Uuid(userId),
+      gameSessionId: new Uuid(gameSessionId),
     });
-    const dbModel = await this.playerRepository.create(PlayerMapper.toPersistence(entity));
 
-    this.eventEmitter.emit('game-session.changed', gameSessionId);
+    const playerDb = await this.playerRepository.create(
+      PlayerMapper.toPersistence(playerEntity),
+    );
 
-    this.logger.log(`Player created: userId=${ userId }, gameSessionId=${ gameSessionId }`);
+    this.logger.log(`Player created: id=${ playerDb.id }`);
 
-    return PlayerMapper.toDto(PlayerMapper.toEntity(dbModel));
+    this.eventEmitter.emit('player.created', gameSessionId);
   }
 
   public async getById(id: string): Promise<PlayerDto> {
     this.logger.log(`Get player by id: ${ id }`);
+
     const dbModel = await this.playerRepository.findById(id);
 
     return PlayerMapper.toDto(PlayerMapper.toEntity(dbModel));

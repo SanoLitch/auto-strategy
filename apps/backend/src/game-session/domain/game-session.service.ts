@@ -4,7 +4,8 @@ import {
 import {
   EventEmitter2, OnEvent,
 } from '@nestjs/event-emitter';
-import { GameSessionStatus } from './game-session.entity';
+import { Uuid } from '@libs/domain-primitives';
+import { GameSession } from './game-session.entity';
 import { GameSessionRepository } from '../db/game-session.repository';
 import { GameSessionMapper } from '../lib/game-session.mapper';
 import { GameSessionDto } from '../api/game-session.dto';
@@ -15,46 +16,74 @@ export class GameSessionService {
   private readonly logger = new Logger(GameSessionService.name);
 
   constructor(
-    private readonly gameSessionRepository: GameSessionRepository,
     private readonly eventEmitter: EventEmitter2,
     private readonly gameSessionGateway: GameSessionGateway,
+    private readonly gameSessionRepository: GameSessionRepository,
   ) { }
 
   async createGameSession(): Promise<GameSessionDto> {
     this.logger.log('Create new game session');
 
-    const sessionDb = await this.gameSessionRepository.create({
-      status: GameSessionStatus.GeneratingMap,
-      created_at: new Date(),
-    });
+    const session = GameSession.create();
+    const persistenceModel = GameSessionMapper.toPersistenceForCreate(session);
 
-    this.logger.log(`Game session created: id=${ sessionDb.id }`);
-    this.logger.log(`Emit map.generate event for sessionId=${ sessionDb.id }`);
+    await this.gameSessionRepository.create(persistenceModel);
 
-    this.eventEmitter.emit('map.generate', { sessionId: sessionDb.id });
+    this.logger.log(`Game session created: id=${ session.id.getValue() }`);
+    this.logger.log(`Emit map.generate event for sessionId=${ session.id.getValue() }`);
 
-    return GameSessionMapper.toDto(GameSessionMapper.toEntity(sessionDb));
+    this.eventEmitter.emit('map.generate', { sessionId: session.id.getValue() });
+
+    return GameSessionMapper.toDto(session);
   }
 
   @OnEvent('map.generated')
-  async updateSessionAfterMapGenerated(sessionId: string, mapId: string): Promise<void> {
+  async handleMapGenerated({
+    sessionId, mapId,
+  }: { sessionId: string; mapId: string }): Promise<void> {
     this.logger.log(`Update session after map generated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
-    await this.gameSessionRepository.update(sessionId, {
-      status: GameSessionStatus.Waiting,
-    });
-
+    try {
+      await this.gameSessionRepository.setMap(sessionId, mapId);
+    } catch (e) {
+      this.logger.error(`Unable to set map to session, sessionId=${ sessionId }, mapId=${ mapId }`);
+      return;
+    }
     this.logger.log(`Session updated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
     this.onGameSessionChanged(sessionId);
+  }
+
+  async requestToJoinSession(userId: string, sessionId: string): Promise<void> {
+    this.logger.log(`User ${ userId } requesting to join session ${ sessionId }`);
+
+    const sessionDb = await this.gameSessionRepository.findById(sessionId);
+    const session = GameSessionMapper.toEntity(sessionDb);
+
+    session.canAddPlayer(new Uuid(userId));
+
+    this.logger.log(`Session validated for joining. Emitting player.joining for user ${ userId }`);
+
+    this.eventEmitter.emit('player.joining', {
+      userId,
+      gameSessionId: sessionId,
+    });
+  }
+
+  @OnEvent('player.created')
+  async handlePlayerCreated(sessionId: string): Promise<void> {
+    this.logger.log(`Received player.created event for session ${ sessionId }. Triggering update.`);
+
+    await this.onGameSessionChanged(sessionId);
   }
 
   async getGameSessionById(sessionId: string): Promise<GameSessionDto> {
     this.logger.log(`Get game session by id: ${ sessionId }`);
 
     const sessionDb = await this.gameSessionRepository.findById(sessionId);
+    const session = GameSessionMapper.toEntity(sessionDb);
 
-    return GameSessionMapper.toDto(GameSessionMapper.toEntity(sessionDb));
+    return GameSessionMapper.toDto(session);
   }
 
   @OnEvent('game-session.changed')

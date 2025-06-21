@@ -1,15 +1,14 @@
-import {
-  Player as PlayerDb, Prisma,
-} from '@prisma/client';
+import { Player as PlayerDb } from '@prisma/client';
+import { Uuid } from '@libs/domain-primitives';
 import { Player } from '../domain/player.entity';
 import { PlayerDto } from '../api/player.dto';
 
 export class PlayerMapper {
   public static toEntity(db: PlayerDb): Player {
     return new Player({
-      id: db.id,
-      userId: db.user_id,
-      gameSessionId: db.game_session_id,
+      id: new Uuid(db.id),
+      userId: new Uuid(db.user_id),
+      gameSessionId: new Uuid(db.game_session_id),
       resources: db.resources as Record<string, number>,
       isWinner: db.is_winner ?? undefined,
     });
@@ -17,9 +16,9 @@ export class PlayerMapper {
 
   public static toDto(entity: Player): PlayerDto {
     return {
-      id: entity.id,
-      userId: entity.userId,
-      gameSessionId: entity.gameSessionId,
+      id: entity.id.getValue(),
+      userId: entity.userId.getValue(),
+      gameSessionId: entity.gameSessionId.getValue(),
       resources: entity.resources,
       isWinner: entity.isWinner,
     };
@@ -27,9 +26,9 @@ export class PlayerMapper {
 
   public static toPersistence(entity: Player): PlayerDb {
     return {
-      id: entity.id,
-      user_id: entity.userId,
-      game_session_id: entity.gameSessionId,
+      id: entity.id.getValue(),
+      user_id: entity.userId.getValue(),
+      game_session_id: entity.gameSessionId.getValue(),
       resources: entity.resources,
       is_winner: entity.isWinner,
     };

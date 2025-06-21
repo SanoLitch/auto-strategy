@@ -1,0 +1,7 @@
+.trae
+.turbo
+.vscode
+node_modules
+pnpm-lock.yaml
+dist
+*.js

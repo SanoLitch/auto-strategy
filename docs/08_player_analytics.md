@@ -64,10 +64,10 @@
 
 ## 4. API для работы с игроком
 
-> **Примечание:** Управление игроками обычно происходит через эндпоинты игровой сессии (`/games/{id}/join`, WebSocket-события). Прямых CRUD-эндпоинтов для Player может не быть, если не требуется по бизнес-логике.
+> **Примечание:** Прямое управление игроками (создание, удаление) происходит через эндпоинты и события игровой сессии (`/games/{id}/players`). Это отражает тот факт, что игрок не существует вне контекста игровой сессии.
 
-- **Присоединение к сессии:**
-  `POST /games/{id}/join` — создаёт нового игрока для пользователя в указанной сессии.
+- **Запрос на присоединение к сессии:**
+  `POST /games/{id}/players` — инициирует асинхронный процесс создания нового игрока для пользователя в указанной сессии.
 
 - **Получение состояния игрока:**
   Обычно возвращается в составе состояния сессии (`GET /games/{gameId}`) или через WebSocket-события.
@@ -95,24 +95,22 @@
 sequenceDiagram
     participant User as Пользователь
     participant Client as Клиент (Frontend)
-    participant Server as Сервер (Backend)
+    participant GameSessionService as Сервер (GameSession)
+    participant PlayerService as Сервер (Player)
     participant DB as База данных
 
     User->>Client: Присоединиться к сессии
-    Client->>Server: POST /games/{id}/join
-    Server->>DB: Создать Player (userId, gameSessionId, resources)
-    DB-->>Server: Подтверждение
-    Server-->>Client: OK (Player)
-    loop Игровой процесс
-        User->>Client: Действия (строить, собирать ресурсы, управлять юнитами)
-        Client->>Server: API/WS команды
-        Server->>DB: Обновить состояние Player (resources, isWinner)
-        Server-->>Client: WebSocket события (resource_updated, building_created, unit_spawned)
-    end
-    alt Победа/Поражение
-        Server->>DB: Обновить Player (isWinner)
-        Server-->>Client: Обновление статуса
-    end
+    Client->>GameSessionService: POST /games/{id}/players
+    GameSessionService->>GameSessionService: Проверка (статус, лимит игроков)
+    GameSessionService-->>Client: 202 Accepted
+    GameSessionService->>PlayerService: emit 'player.create.request'
+
+    PlayerService->>DB: Найти игрока (чтобы избежать дублей)
+    PlayerService->>DB: Создать Player (userId, gameSessionId, resources)
+    DB-->>PlayerService: Подтверждение
+    PlayerService->>GameSessionService: emit 'player.created'
+
+    GameSessionService->>Client: WebSocket event (game_state_update)
 ```
 
 ---

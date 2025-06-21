@@ -115,10 +115,18 @@ sequenceDiagram
     DB-->>Server: Подтверждение
     Server-->>Client: WebSocket event: map_generated
     User->>Client: Присоединиться к сессии
-    Client->>Server: POST /games/{id}/join
-    Server->>DB: Добавить Player
-    DB-->>Server: Подтверждение
-    Server-->>Client: OK
+    Client->>Server: POST /games/{id}/players
+    Server->>Server: Проверка (статус, лимит игроков)
+    Server-->>Client: 202 Accepted
+    Server->>Server: Событие 'player.create.request'
+
+    participant PlayerService
+    Server->>PlayerService: (Слушает событие)
+    PlayerService->>DB: Создать Player
+    DB-->>PlayerService: Player создан
+    PlayerService->>Server: Событие 'player.created'
+
+    Server->>Client: WebSocket event: game_state_update
     loop Игровой процесс
         User->>Client: Действия (строить, управлять)
         Client->>Server: API/WS команды

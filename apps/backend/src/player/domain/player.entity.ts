@@ -1,16 +1,16 @@
-import { randomUUID } from 'crypto';
+import { Uuid } from '@libs/domain-primitives';
 
 export class Player {
-  readonly id: string;
-  readonly userId: string;
-  readonly gameSessionId: string;
-  readonly resources: Record<string, number>;
-  readonly isWinner?: boolean;
+  readonly id: Uuid;
+  readonly userId: Uuid;
+  readonly gameSessionId: Uuid;
+  readonly resources: Readonly<Record<string, number>>;
+  readonly isWinner: boolean;
 
   constructor(params: {
-    id: string;
-    userId: string;
-    gameSessionId: string;
+    id: Uuid;
+    userId: Uuid;
+    gameSessionId: Uuid;
     resources: Record<string, number>;
     isWinner?: boolean;
   }) {
@@ -18,27 +18,21 @@ export class Player {
     this.userId = params.userId;
     this.gameSessionId = params.gameSessionId;
     this.resources = params.resources;
-    this.isWinner = params.isWinner;
+    this.isWinner = params.isWinner ?? false;
   }
 
-  /**
-   * Фабричный метод создания нового игрока с базовой валидацией и инициализацией ресурсов.
-   */
-  public static create(params: {
-    userId: string;
-    gameSessionId: string;
-    resources?: Record<string, number>;
+  static create(params: {
+    userId: Uuid;
+    gameSessionId: Uuid;
+    initialResources?: Record<string, number>;
   }): Player {
-    if (!params.userId) throw new Error('userId is required');
-    if (!params.gameSessionId) throw new Error('gameSessionId is required');
-
-    const resources = params.resources ?? {
+    const resources = params.initialResources ?? {
       gold: 100,
       crystals: 0,
     };
 
     return new Player({
-      id: randomUUID(),
+      id: new Uuid(),
       userId: params.userId,
       gameSessionId: params.gameSessionId,
       resources,
@@ -46,17 +40,51 @@ export class Player {
     });
   }
 
-  public withResources(resources: Record<string, number>): Player {
+  public canAfford(cost: Partial<Record<string, number>>): boolean {
+    for (const key in cost) {
+      if ((this.resources[key] ?? 0) < (cost[key] ?? 0)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public spendResources(cost: Partial<Record<string, number>>): Player {
+    if (!this.canAfford(cost)) {
+      throw new Error('Insufficient resources'); // TODO: Replace with a specific DomainException
+    }
+
+    const newResources = { ...this.resources };
+
+    for (const key in cost) {
+      newResources[key] -= cost[key] ?? 0;
+    }
+
     return new Player({
       ...this,
-      resources,
+      resources: newResources,
     });
   }
 
-  public withWinner(isWinner: boolean = true): Player {
+  public earnResources(amount: Partial<Record<string, number>>): Player {
+    const newResources = { ...this.resources };
+
+    for (const key in amount) {
+      newResources[key] = (newResources[key] ?? 0) + (amount[key] ?? 0);
+    }
     return new Player({
       ...this,
-      isWinner,
+      resources: newResources,
+    });
+  }
+
+  public markAsWinner(): Player {
+    if (this.isWinner) {
+      return this;
+    }
+    return new Player({
+      ...this,
+      isWinner: true,
     });
   }
 }

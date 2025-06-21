@@ -41,7 +41,7 @@ Generate code, corrections, and refactorings that comply with the basic principl
   - folder *migrations* used for migration storing
   - folder *schemes* contains all PrismaORM schemes, one file per entity
 
-### Domain-Driven Design (DDD) Principles
+# Domain-Driven Design (DDD) Common Principles
 
 ## General Principles:
 - Thin Services, Rich Domain: Services in the domain layer should act as orchestrators (Application Services). They coordinate the workflow but do not contain business logic. All business rules, validations, and logic should be encapsulated within Domain Entities and Value Objects.
@@ -79,6 +79,131 @@ Generate code, corrections, and refactorings that comply with the basic principl
 - toDto(domainEntity): DTO
 - toPersistence(domainEntity): PersistenceModel
 - Hydration/Dehydration: The mapper is responsible for "hydrating" Value Objects from primitive types when mapping toEntity, and "dehydrating" them back to primitives when mapping toPersistence or toDto.
+
+# Domain-Driven Design (DDD): Rich Model & Aggregates Principles
+
+This document outlines the core principles for implementing a rich domain model using the Domain-Driven Design (DDD) approach. The primary goal is to move beyond anemic domain models (where objects are just data containers) and create "smart" entities that encapsulate business logic and rules, leading to a more robust, maintainable, and understandable system.
+
+---
+
+## 1. The Aggregate Pattern
+
+*   An **Aggregate** is a cluster of associated objects (entities and value objects) that we treat as a single unit for the purpose of data changes.
+*   Every Aggregate has a single entry point called the **Aggregate Root**. It is a specific entity within the aggregate.
+*   All external references must only go to the Aggregate Root. Child entities within the aggregate can only be accessed through the root.
+*   A change to any object within the aggregate boundary must be performed as a single, atomic transaction.
+
+```mermaid
+graph TD
+    subgraph "GameSession Aggregate"
+        A[GameSession <br/> (Aggregate Root)] --> B(Player)
+        A --> C(Map)
+        B --> D(Building)
+        B --> E(Unit)
+    end
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+```
+
+---
+
+## 2. Responsibilities of an Aggregate Root
+
+The Aggregate Root is the heart of the pattern. It must be responsible for the following:
+
+*   **Be the Sole Gatekeeper:** All commands and modifications for any entity within the aggregate must go through a method on the Aggregate Root. Direct modification of child entities from services is forbidden.
+*   **Enforce Invariants:** The Aggregate Root is responsible for maintaining the consistency and validity of the entire aggregate. It must enforce all business rules (invariants) before any state change is committed.
+    > *Example: A `GameSession` root must ensure a `Player` cannot be added if the session is already `IN_PROGRESS`.*
+*   **Manage Entity Lifecycles:** The Aggregate Root controls the creation and deletion of its child entities.
+    > *Example: A `GameSession` creates `Player`s; a `Player` creates `Building`s.*
+*   **Use Factory Methods for Creation:** Use static factory methods (e.g., `static createNew()`) to encapsulate the logic for creating a valid root instance in its initial state.
+*   **Expose Behavior, Not State:** Methods on the root should be named after business operations (e.g., `addPlayer`, `startGame`, `finishGame`), not generic setters (e.g., `setStatus`).
+
+---
+
+## 3. Responsibilities of Child Entities
+
+*   **Contain Local Logic:** Entities within the aggregate should contain business logic that pertains directly to them.
+    > *Example: A `Building` entity should know how to `produceUnit()`.*
+*   **Never Be Modified Directly:** Their state should only be changed by methods on the Aggregate Root or by other entities within the same aggregate.
+
+---
+
+## 4. The Role of Application Services (Use Cases)
+
+*   **Be Thin Orchestrators:** Services should not contain business logic. Their role is to orchestrate the interaction between the outside world (e.g., controllers) and the domain model.
+*   **Follow a Clear Workflow:**
+    1.  **Fetch:** Load one or more Aggregate Roots from the repository.
+    2.  **Execute:** Call a single method on an Aggregate Root, passing any necessary data. The domain model handles all the business rules.
+    3.  **Persist:** Save the modified Aggregate Root back to the repository.
+*   **Manage Transactions:** The service is responsible for defining the transaction boundary. The entire `fetch -> execute -> persist` flow should be atomic.
+
+---
+
+## 5. Example: Anemic vs. Rich Model
+
+### Before: Anemic Model (Logic in the Service)
+
+```typescript
+// In PlayerService.ts
+async addPlayerToSession(userId: string, sessionId: string): Promise<void> {
+  const session = await this.sessionRepo.findById(sessionId);
+  const playerExists = await this.playerRepo.exists(userId, sessionId);
+
+  if (session.status !== 'WAITING') {
+    throw new SessionNotWaitingError();
+  }
+  if (playerExists) {
+    throw new PlayerAlreadyJoinedError();
+  }
+  // ... more checks ...
+
+  const player = new Player({ userId, sessionId, ... }); // Just a data bag
+  await this.playerRepo.save(player);
+
+  session.playerCount++; // Direct state mutation
+  await this.sessionRepo.save(session);
+}
+```
+
+### After: Rich Model (Logic in the Domain Model)
+
+```typescript
+// In GameSessionService.ts
+async addPlayerToSession(userId: string, sessionId: string): Promise<void> {
+  // 1. Fetch the aggregate root
+  const session = await this.sessionRepo.findById(sessionId);
+  const user = await this.userRepo.findById(userId);
+
+  // 2. Execute a business method on the root. All logic is inside.
+  session.addPlayer(user);
+
+  // 3. Persist the entire aggregate
+  await this.sessionRepo.save(session);
+}
+
+// In GameSession.ts (The Aggregate Root)
+public addPlayer(user: User): void {
+  if (this.status !== GameSessionStatus.Waiting) {
+    throw new SessionNotWaitingError();
+  }
+  if (this.players.some(p => p.userId.equals(user.id))) {
+    throw new PlayerAlreadyJoinedError();
+  }
+  // ... more checks ...
+
+  const newPlayer = Player.createForSession(user, this.id);
+  this.players.push(newPlayer);
+}
+```
+
+---
+
+## 6. Benefits of This Approach
+
+*   **Robustness:** Business rules are consistently enforced because they are co-located with the data they protect. It becomes impossible to create an invalid state.
+*   **Testability:** The rich domain model can be unit-tested in complete isolation, without databases, frameworks, or external dependencies.
+*   **Clarity:** The code becomes a more accurate reflection of the business domain. The intent of a use case is immediately clear from reading the service method.
+*   **Flexibility:** Services become simple "glue" code and are easy to change or replace without affecting the core business logic encapsulated in the domain model.
 
 ### Nomenclature
 

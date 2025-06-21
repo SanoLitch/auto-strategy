@@ -1,12 +1,19 @@
 import {
-  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards,
+  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards, Req,
 } from '@nestjs/common';
 import {
   ApiTags, ApiOperation, ApiResponse, ApiParam, ApiCookieAuth,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@libs/nest-jwt';
+import { Request } from 'express';
 import { GameSessionDto } from './game-session.dto';
 import { GameSessionService } from '../domain/game-session.service';
+
+interface RequestWithUser extends Request {
+  user: {
+    sub: string;
+  };
+}
 
 @ApiTags('Game Session')
 @Controller('v1/games')
@@ -23,10 +30,6 @@ export class GameSessionController {
     return 'GameSession module is working';
   }
 
-  /**
-   * Создать новую игровую сессию (асинхронно).
-   * @returns GameSessionDto
-   */
   @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -48,6 +51,42 @@ export class GameSessionController {
     const session = await this.gameSessionService.createGameSession();
 
     return session;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/players')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiCookieAuth()
+  @ApiOperation({ summary: 'Request to join a game session as a player' })
+  @ApiParam({
+    name: 'id',
+    description: 'Game Session ID',
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'The request to join has been accepted and is being processed.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Game session not found.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. Session is full or not accepting new players.',
+  })
+  async joinGameSession(
+    @Param('id') sessionId: string,
+    @Req() req: RequestWithUser,
+  ): Promise<void> {
+    const userId = req.user.sub;
+
+    this.logger.log(`POST /v1/games/${ sessionId }/players - userId: ${ userId } requests to join`);
+
+    await this.gameSessionService.requestToJoinSession(userId, sessionId);
   }
 
   @UseGuards(JwtAuthGuard)

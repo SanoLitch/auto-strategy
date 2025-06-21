@@ -65,7 +65,7 @@ export enum TerrainType {
 }
 
 export class Map {
-  private readonly id: Uuid;
+  readonly id: Uuid;
   readonly size: MapSize;
   terrainData: TerrainType[][];
   spawnPoints: SpawnPoint[];
@@ -80,10 +80,6 @@ export class Map {
     this.size = params.size;
     this.terrainData = params.terrainData ?? [];
     this.spawnPoints = params.spawnPoints ?? [];
-  }
-
-  getId(): string {
-    return this.id.getValue();
   }
 
   generateTerrain(): void {

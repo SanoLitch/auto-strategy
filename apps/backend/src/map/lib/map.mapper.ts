@@ -19,7 +19,7 @@ export class MapMapper {
 
   static toPersistence(map: Map): Partial<MapDb> {
     return {
-      id: map.getId(),
+      id: map.id.getValue(),
       size: map.size.toJSON(),
       terrain_data: map.terrainData,
       spawn_points: map.spawnPoints.map(point => point.toJSON()),
@@ -28,7 +28,7 @@ export class MapMapper {
 
   static toDto(map: Map): MapDto {
     return {
-      id: map.getId(),
+      id: map.id.getValue(),
       size: map.size,
       terrainData: map.terrainData,
       spawnPoints: map.spawnPoints.map(({ point: [x, y] }) => ({

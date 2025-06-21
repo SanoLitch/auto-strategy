@@ -45,6 +45,7 @@ export class UserService {
     await this.userRepository.create(persistenceData);
 
     this.logger.log(`User registered: ${ dto.email }`);
+
     return UserMapper.toDto(newUser);
   }
 
