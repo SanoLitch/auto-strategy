@@ -52,6 +52,13 @@
     "pipeline:build": {
       "cache": true,
       "persistent": false
+    },
+    "prisma:migrate": {
+      "with": [
+        "backend#prisma:migrate"
+      ],
+      "cache": false,
+      "persistent": true
     }
   }
 }

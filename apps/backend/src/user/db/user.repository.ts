@@ -1,5 +1,5 @@
 import {
-  Injectable, NotFoundException,
+  Injectable,
 } from '@nestjs/common';
 import {
   Prisma, User as UserDb,
@@ -29,12 +29,7 @@ export class UserRepository {
   }
 
   public async findByEmail(email: string): Promise<UserDb> {
-    const user = await this.db.user.findUnique({ where: { email } });
-
-    if (!user) {
-      throw new NotFoundException(`User with email ${ email } not found.`);
-    }
-    return user;
+    return await this.db.user.findFirstOrThrow({ where: { email } });
   }
 
   public async findById(id: string): Promise<UserDb> {

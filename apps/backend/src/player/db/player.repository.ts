@@ -16,8 +16,8 @@ export class PlayerRepository {
 
   public async findByUserAndSession(userId: string, gameSessionId: string): Promise<PlayerDb> {
     return this.db.player.findFirstOrThrow({ where: {
-      user_id: userId,
-      game_session_id: gameSessionId,
+      userId,
+      gameSessionId,
     } });
   }
 
@@ -31,7 +31,7 @@ export class PlayerRepository {
   public async setWinner(id: string, isWinner: boolean): Promise<PlayerDb> {
     return this.db.player.update({
       where: { id },
-      data: { is_winner: isWinner },
+      data: { isWinner },
     });
   }
 

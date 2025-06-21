@@ -12,17 +12,18 @@ export class MapMapper {
     return new Map({
       id: new Uuid(mapDb.id),
       size: MapSize.fromJSON(mapDb.size),
-      terrainData: mapDb.terrain_data as TerrainType[][],
-      spawnPoints: (mapDb.spawn_points as Prisma.JsonArray).map(point => SpawnPoint.fromJSON(point)),
+      terrainData: mapDb.terrainData as TerrainType[][],
+      spawnPoints: (mapDb.spawnPoints as Prisma.JsonArray).map(point => SpawnPoint.fromJSON(point)),
     });
   }
 
-  public static toPersistence(map: Map): Partial<MapDb> {
+  public static toPersistence(map: Map, sessionId: string): MapDb {
     return {
       id: map.id.getValue(),
       size: map.size.toJSON(),
-      terrain_data: map.terrainData,
-      spawn_points: map.spawnPoints.map(point => point.toJSON()),
+      gameSessionId: sessionId,
+      terrainData: map.terrainData,
+      spawnPoints: map.spawnPoints.map(point => point.toJSON()),
     };
   }
 

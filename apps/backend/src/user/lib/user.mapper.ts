@@ -12,9 +12,9 @@ export class UserMapper {
     return new UserDomain({
       id: new Uuid(userPrisma.id),
       email: userPrisma.email,
-      passwordHash: new PasswordHash(userPrisma.password_hash),
-      createdAt: userPrisma.created_at,
-      updatedAt: userPrisma.updated_at,
+      passwordHash: new PasswordHash(userPrisma.passwordHash),
+      createdAt: userPrisma.createdAt,
+      updatedAt: userPrisma.updatedAt,
     });
   }
 
@@ -31,9 +31,9 @@ export class UserMapper {
     return {
       id: user.id.getValue(),
       email: user.email,
-      password_hash: user.passwordHash.getValue(),
-      created_at: user.createdAt,
-      updated_at: user.updatedAt,
+      passwordHash: user.passwordHash.getValue(),
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   }
 }

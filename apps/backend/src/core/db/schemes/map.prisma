@@ -1,10 +1,10 @@
 model Map {
-  id           String        @id @default(uuid())
-  size         Json
-  terrain_data Json          @map("terrainData")
-  spawn_points Json          @map("spawnPoints")
-  game_session String        @unique @map("gameSession")
-  GameSession  GameSession[]
+  id            String      @id @default(uuid())
+  gameSessionId String      @unique @map("game_session_id")
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id])
+  size          Json
+  terrainData   Json        @map("terrain_data")
+  spawnPoints   Json        @map("spawn_points")
 
   @@map("maps")
 }

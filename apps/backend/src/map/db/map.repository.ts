@@ -6,13 +6,17 @@ import { DbService } from '../../core/db/db.service';
 export class MapRepository {
   constructor(private readonly db: DbService) { }
 
-  public async createMap(gameSessionId: string, data: Partial<MapDb>): Promise<MapDb> {
+  public async createMap(data: MapDb): Promise<MapDb> {
     return this.db.map.create({
       data: {
-        game_session: gameSessionId,
         size: data.size,
-        terrain_data: data.terrain_data,
-        spawn_points: data.spawn_points,
+        terrainData: data.terrainData,
+        spawnPoints: data.spawnPoints,
+        gameSession: {
+          connect: {
+            id: data.gameSessionId,
+          },
+        },
       },
     });
   }

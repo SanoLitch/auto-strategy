@@ -38,16 +38,14 @@ export class GameSessionService {
   }
 
   @OnEvent('map.generated')
-  public async handleMapGenerated({
-    sessionId, mapId,
-  }: { sessionId: string; mapId: string }): Promise<void> {
+  public async handleMapGenerated(sessionId: string, mapId: string): Promise<void> {
     this.logger.log(`Update session after map generated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
     try {
-      await this.gameSessionRepository.setMap(sessionId, mapId);
+      await this.gameSessionRepository.update(sessionId, { status: 'WAITING' });
     } catch (e) {
-      this.logger.error(`Unable to set map to session, sessionId=${ sessionId }, mapId=${ mapId }`);
-      return;
+      this.logger.error(`Unable to set session in status, sessionId=${ sessionId }, status=${ mapId }`);
+      throw e;
     }
     this.logger.log(`Session updated: sessionId=${ sessionId }, mapId=${ mapId }`);
 

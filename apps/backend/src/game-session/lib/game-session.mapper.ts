@@ -17,8 +17,8 @@ export class GameSessionMapper {
     return new GameSession({
       id: new Uuid(db.id),
       status: db.status as GameSessionStatus,
-      createdAt: db.created_at,
-      finishedAt: db.finished_at ?? undefined,
+      createdAt: db.createdAt,
+      finishedAt: db.finishedAt ?? undefined,
       players,
       map,
     });
@@ -28,17 +28,16 @@ export class GameSessionMapper {
     return {
       id: entity.id.getValue(),
       status: entity.status,
-      created_at: entity.createdAt,
+      createdAt: entity.createdAt,
     };
   }
 
   public static toPersistence(entity: GameSession): Partial<GameSessionDb> {
     return {
       id: entity.id.getValue(),
-      map_id: entity.mapId?.getValue() ?? null,
       status: entity.status,
-      created_at: entity.createdAt,
-      finished_at: entity.finishedAt,
+      createdAt: entity.createdAt,
+      finishedAt: entity.finishedAt,
     };
   }
 

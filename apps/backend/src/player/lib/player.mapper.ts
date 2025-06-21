@@ -7,10 +7,10 @@ export class PlayerMapper {
   public static toEntity(db: PlayerDb): Player {
     return new Player({
       id: new Uuid(db.id),
-      userId: new Uuid(db.user_id),
-      gameSessionId: new Uuid(db.game_session_id),
+      userId: new Uuid(db.userId),
+      gameSessionId: new Uuid(db.gameSessionId),
       resources: db.resources as Record<string, number>,
-      isWinner: db.is_winner ?? undefined,
+      isWinner: db.isWinner ?? undefined,
     });
   }
 
@@ -27,10 +27,10 @@ export class PlayerMapper {
   public static toPersistence(entity: Player): PlayerDb {
     return {
       id: entity.id.getValue(),
-      user_id: entity.userId.getValue(),
-      game_session_id: entity.gameSessionId.getValue(),
+      userId: entity.userId.getValue(),
+      gameSessionId: entity.gameSessionId.getValue(),
       resources: entity.resources,
-      is_winner: entity.isWinner,
+      isWinner: entity.isWinner,
     };
   }
 }

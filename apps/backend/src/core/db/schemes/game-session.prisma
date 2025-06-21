@@ -6,13 +6,12 @@ enum GameSessionStatus {
 }
 
 model GameSession {
-  id          String            @id @default(uuid())
-  map_id      String?           @map("mapId")
-  status      GameSessionStatus
-  created_at  DateTime          @default(now()) @map("createdAt")
-  finished_at DateTime?         @map("finishedAt")
-  players     Player[]
-  map         Map?              @relation(fields: [map_id], references: [id])
+  id         String            @id @default(uuid())
+  status     GameSessionStatus
+  createdAt  DateTime          @default(now()) @map("created_at")
+  finishedAt DateTime?         @map("finished_at")
+  players    Player[]
+  map        Map?
 
   @@map("game_sessions")
 }

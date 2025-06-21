@@ -1,12 +1,12 @@
 model Unit {
-  id          String   @id @default(uuid())
-  player_id   String   @map("playerId")
-  building_id String   @map("buildingId")
-  type        UnitType
-  position    Json
-  health      Int
-  player      Player   @relation(fields: [player_id], references: [id])
-  building    Building @relation(fields: [building_id], references: [id])
+  id         String   @id @default(uuid())
+  playerId   String   @map("player_id")
+  buildingId String   @map("building_id")
+  type       UnitType
+  position   Json
+  health     Int
+  player     Player   @relation(fields: [playerId], references: [id])
+  building   Building @relation(fields: [buildingId], references: [id])
 
   @@map("units")
 }

@@ -1,13 +1,13 @@
 model Player {
-  id              String      @id @default(uuid())
-  user_id         String      @map("userId")
-  game_session_id String      @map("gameSessionId")
-  resources       Json
-  is_winner       Boolean?    @map("isWinner")
-  user            User        @relation(fields: [user_id], references: [id])
-  gameSession     GameSession @relation(fields: [game_session_id], references: [id])
-  buildings       Building[]
-  units           Unit[]
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  gameSessionId String      @map("game_session_id")
+  resources     Json
+  isWinner      Boolean?    @map("is_winner")
+  user          User        @relation(fields: [userId], references: [id])
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id])
+  buildings     Building[]
+  units         Unit[]
 
   @@map("players")
 }
