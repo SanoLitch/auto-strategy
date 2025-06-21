@@ -23,3 +23,21 @@ export class SessionIsFullError extends DomainException {
     super(`Session is full. Player limit of ${limit} has been reached.`);
   }
 }
+
+export class SessionIsEmptyError extends DomainException {
+  constructor(sessionId: string) {
+    super(`No players in session ${sessionId}`);
+  }
+}
+
+export class SessionStartInWrongStatusError extends DomainException {
+  constructor(sessionId: string, status: string) {
+    super(`No players in session ${sessionId}, status ${status}`);
+  }
+}
+
+export class SessionMapSetInWrongStatusError extends DomainException {
+  constructor(sessionId: string, status: string) {
+    super(`Trying set map in session ${sessionId} with status ${status}`);
+  }
+}

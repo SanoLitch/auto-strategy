@@ -4,6 +4,9 @@ import {
   MapNotGeneratedError,
   PlayerAlreadyJoinedError,
   SessionIsFullError,
+  SessionIsEmptyError,
+  SessionStartInWrongStatusError,
+  SessionMapSetInWrongStatusError,
 } from '@libs/utils';
 import { Player } from '../../player/domain/player.entity';
 import { Map } from '../../map/domain/map.entity';
@@ -64,7 +67,7 @@ export class GameSession {
 
   public assignMap(map: Map): void {
     if (this.status !== GameSessionStatus.GeneratingMap) {
-      throw new Error('Cannot assign map unless session is in GeneratingMap status.');
+      throw new SessionMapSetInWrongStatusError(this.id.getValue(), this.status);
     }
     this._map = map;
     this.status = GameSessionStatus.Waiting;
@@ -87,14 +90,18 @@ export class GameSession {
 
   public startGame(): void {
     if (this.status !== GameSessionStatus.Waiting) {
-      throw new Error('Cannot start game unless session is in Waiting status.');
+      throw new SessionStartInWrongStatusError(this.id.getValue(), this.status);
     }
-    // TODO: Add logic like checking for minimum number of players
+    if (this.players.length === 0) {
+      throw new SessionIsEmptyError(this.id.getValue());
+    }
     this.status = GameSessionStatus.InProgress;
   }
 
   public finish(): void {
-    if (this.status === GameSessionStatus.Finished) return;
+    if (this.status === GameSessionStatus.Finished) {
+      return;
+    };
     this.status = GameSessionStatus.Finished;
     this.finishedAt = new Date();
   }

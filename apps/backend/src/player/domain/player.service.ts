@@ -37,7 +37,6 @@ export class PlayerService {
       this.logger.warn(
         `Player already exists, ignoring creation request: userId=${ userId }, gameSessionId=${ gameSessionId }`,
       );
-
       return;
     } catch (err) {
       this.logger.log(

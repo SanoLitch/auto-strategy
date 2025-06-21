@@ -101,7 +101,7 @@ export class Map {
     if (playersCount >= 2) points.push(new SpawnPoint(this.size.width - 2, this.size.height - 2));
     if (playersCount >= 3) points.push(new SpawnPoint(1, this.size.height - 2));
     if (playersCount >= 4) points.push(new SpawnPoint(this.size.width - 2, 1));
-    // TODO: Более сложная логика для >4 игроков
+
     this.spawnPoints = points;
   }
 }

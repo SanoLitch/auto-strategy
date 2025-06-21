@@ -18,6 +18,9 @@ import {
   SessionNotWaitingError,
   MapNotGeneratedError,
   InsufficientResourcesError,
+  SessionIsEmptyError,
+  SessionStartInWrongStatusError,
+  SessionMapSetInWrongStatusError,
 } from '@libs/utils';
 
 @Catch(DomainException)
@@ -31,6 +34,9 @@ export class DomainExceptionFilter implements ExceptionFilter {
     [SessionNotWaitingError, HttpStatus.BAD_REQUEST],
     [MapNotGeneratedError, HttpStatus.BAD_REQUEST],
     [InsufficientResourcesError, HttpStatus.BAD_REQUEST],
+    [SessionIsEmptyError, HttpStatus.BAD_REQUEST],
+    [SessionStartInWrongStatusError, HttpStatus.BAD_REQUEST],
+    [SessionMapSetInWrongStatusError, HttpStatus.BAD_REQUEST],
   ] as const);
 
   catch(exception: DomainException, host: ArgumentsHost) {
