@@ -127,6 +127,12 @@
 | `createdAt` | String | Дата создания (ISO 8601) | `"2023-10-27T10:00:00.000Z"` |
 | `finishedAt` | String \| null | Дата завершения (ISO 8601) | `"2023-10-27T11:00:00.000Z"` |
 
+**GameSessionStatus enum:**
+- `"GENERATING_MAP"` - Карта генерируется
+- `"WAITING"` - Ожидание игроков
+- `"IN_PROGRESS"` - Игра в процессе
+- `"FINISHED"` - Игра завершена
+
 ### 2.3. PlayerDto
 
 **Описание:** Объект игрока в сессии.
@@ -137,7 +143,7 @@
 | `userId` | UUID | Идентификатор пользователя | `"b2c3d4e5-f6a7-8901-2345-67890abcdef1"` |
 | `gameSessionId` | UUID | Идентификатор игровой сессии | `"c3d4e5f6-a7b8-9012-3456-7890abcdef12"` |
 | `resources` | Object | Ресурсы игрока | `{"gold": 1000, "crystals": 50}` |
-| `isWinner` | Boolean \| undefined | Флаг победителя | `false` |
+| `isWinner` | Boolean | Флаг победителя | `false` |
 
 ### 2.4. MapDto
 
@@ -148,12 +154,16 @@
 | `id` | UUID | Уникальный идентификатор карты | `"a1b2c3d4-e5f6-7890-1234-567890abcdef"` |
 | `size` | Object | Размеры карты | `{"width": 100, "height": 100}` |
 | `terrainData` | Array<Array<TerrainType>> | 2D массив типов местности | `[["Dirt", "Rock"], ["Bedrock", "Dirt"]]` |
-| `spawnPoints` | Array | Точки спавна игроков | `[{"x": 10, "y": 10}, {"x": 90, "y": 90}]` |
+| `spawnPoints` | Array<SpawnPoint> | Точки спавна игроков | `[{"x": 1, "y": 1}, {"x": 98, "y": 98}]` |
 
 **TerrainType enum:**
 - `"Dirt"` - Земля
 - `"Rock"` - Камень
 - `"Bedrock"` - Скальная порода
+
+**SpawnPoint:**
+- `x` (number) - X координата точки спавна
+- `y` (number) - Y координата точки спавна
 
 ---
 
