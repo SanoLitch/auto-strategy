@@ -4,6 +4,7 @@ import {
 import {
   Prisma, User as UserDb,
 } from '@prisma/client';
+import { UserAlreadyExistsError } from '@libs/utils';
 import { DbService } from '../../core';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class UserRepository {
       return await this.db.user.create({ data });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new Error('User with this email already exists.');
+        throw new UserAlreadyExistsError(data.email as string);
       }
       throw error;
     }

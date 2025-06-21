@@ -1,9 +1,10 @@
 import {
-  Injectable, UnauthorizedException, ConflictException, Logger, NotFoundException,
+  Injectable, UnauthorizedException, Logger, NotFoundException,
 } from '@nestjs/common';
 import {
   TokenService, type TokenWithExpiry,
 } from '@libs/nest-jwt';
+import { UserAlreadyExistsError } from '@libs/utils';
 import { User } from './user.entity';
 import { UserRepository } from '../db/user.repository';
 import { RegisterDto } from '../api/register.dto';
@@ -26,9 +27,8 @@ export class UserService {
     const userExists = await this.userRepository.existsByEmail(dto.email);
 
     if (userExists) {
-      throw new ConflictException('Email already exists');
+      throw new UserAlreadyExistsError('Email already exists');
     }
-
     const newUser = await User.create({
       email: dto.email,
       password: dto.password,

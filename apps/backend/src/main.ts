@@ -5,12 +5,16 @@ import {
 } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './core/http-exception.filter';
+import { DomainExceptionFilter } from './core/domain-exception.filter';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   app.useLogger(app.get(Logger));
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(
+    new DomainExceptionFilter(),
+    new HttpExceptionFilter(),
+  );
   app.enableCors();
   app.setGlobalPrefix('/api', { exclude: ['/', '/docs'] });
 

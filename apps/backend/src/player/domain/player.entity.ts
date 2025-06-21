@@ -1,4 +1,5 @@
 import { Uuid } from '@libs/domain-primitives';
+import { InsufficientResourcesError } from '@libs/utils';
 
 export class Player {
   readonly id: Uuid;
@@ -51,7 +52,7 @@ export class Player {
 
   public spendResources(cost: Partial<Record<string, number>>): Player {
     if (!this.canAfford(cost)) {
-      throw new Error('Insufficient resources'); // TODO: Replace with a specific DomainException
+      throw new InsufficientResourcesError();
     }
 
     const newResources = { ...this.resources };

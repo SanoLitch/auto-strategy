@@ -5,7 +5,8 @@ import {
   Request, Response,
 } from 'express';
 import {
-  hasMessage, hasStack,
+  hasMessage,
+  hasStack,
 } from '@libs/utils';
 
 @Catch()

@@ -1,4 +1,10 @@
 import { Uuid } from '@libs/domain-primitives';
+import {
+  SessionNotWaitingError,
+  MapNotGeneratedError,
+  PlayerAlreadyJoinedError,
+  SessionIsFullError,
+} from '@libs/utils';
 import { Player } from '../../player/domain/player.entity';
 import { Map } from '../../map/domain/map.entity';
 
@@ -66,16 +72,16 @@ export class GameSession {
 
   public canAddPlayer(userId: Uuid): void {
     if (this.status !== GameSessionStatus.Waiting) {
-      throw new Error('Cannot add player while session is not in Waiting status.');
+      throw new SessionNotWaitingError(this.status);
     }
     if (!this._map) {
-      throw new Error('Cannot add player before map is generated.');
+      throw new MapNotGeneratedError();
     }
     if (this._players.some(p => p.userId.getValue() === userId.getValue())) {
-      throw new Error('Player has already joined this session.'); // Should be a DomainException
+      throw new PlayerAlreadyJoinedError(userId.getValue());
     }
     if (this._players.length >= this._map.spawnPoints.length) {
-      throw new Error('Session is full, no available spawn points.');
+      throw new SessionIsFullError(this._map.spawnPoints.length);
     }
   }
 
