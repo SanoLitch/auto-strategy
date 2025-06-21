@@ -32,22 +32,29 @@ export class MapService {
 
   @OnEvent('map.generate')
   public async handleMapGenerateEvent(payload: MapGenerateEventPayload): Promise<void> {
+    const {
+      sessionId, playersCount, size,
+    } = payload;
+
     this.logger.log(`Handle map.generate event:
-    sessionId=${ payload.sessionId },
-    size=${ JSON.stringify(payload.size) },
-    playersCount=${ payload.playersCount }`);
+    sessionId=${ sessionId },
+    size=${ JSON.stringify(size) },
+    playersCount=${ playersCount }`);
 
     const worker = new Worker(
       require.resolve('../lib/map-generation.worker'),
       {
         workerData: {
-          size: payload.size,
-          playersCount: payload.playersCount,
+          size,
+          playersCount,
         },
       },
     );
 
-    const result = await new Promise<{ terrainData: TerrainType[][]; spawnPoints: SpawnPoint[] }>((resolve, reject) => {
+    const result = await new Promise<{
+      terrainData: TerrainType[][];
+      spawnPoints: { x: number; y: number };
+    }>((resolve, reject) => {
       worker.on('message', resolve);
       worker.on('error', reject);
       worker.on('exit', code => {
@@ -57,9 +64,10 @@ export class MapService {
       });
     });
 
-    const map = new Map({
-      id: new Uuid(),
-      size: MapSize.fromJSON(payload.size),
+    const map = MapMapper.toEntity({
+      id: null,
+      size: payload.size,
+      gameSessionId: payload.sessionId,
       terrainData: result.terrainData,
       spawnPoints: result.spawnPoints,
     });

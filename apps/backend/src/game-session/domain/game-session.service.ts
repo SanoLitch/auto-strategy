@@ -10,6 +10,7 @@ import { GameSessionRepository } from '../db/game-session.repository';
 import { GameSessionMapper } from '../lib/game-session.mapper';
 import { GameSessionDto } from '../api/game-session.dto';
 import { GameSessionGateway } from '../api/game-session.gateway';
+import { MapSize } from '../../map';
 
 @Injectable()
 export class GameSessionService {
@@ -21,7 +22,7 @@ export class GameSessionService {
     private readonly gameSessionRepository: GameSessionRepository,
   ) { }
 
-  public async createGameSession(): Promise<GameSessionDto> {
+  public async createGameSession(size: number, playersCount: number): Promise<GameSessionDto> {
     this.logger.log('Create new game session');
 
     const session = GameSession.create();
@@ -32,7 +33,11 @@ export class GameSessionService {
     this.logger.log(`Game session created: id=${ session.id.getValue() }`);
     this.logger.log(`Emit map.generate event for sessionId=${ session.id.getValue() }`);
 
-    this.eventEmitter.emit('map.generate', { sessionId: session.id.getValue() });
+    this.eventEmitter.emit('map.generate', {
+      sessionId: session.id.getValue(),
+      size: new MapSize(size, size).toJSON(),
+      playersCount,
+    });
 
     return GameSessionMapper.toDto(session);
   }

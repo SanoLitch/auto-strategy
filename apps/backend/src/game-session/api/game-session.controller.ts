@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards, Req,
+  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards, Req, Body,
 } from '@nestjs/common';
 import {
   ApiTags, ApiOperation, ApiResponse, ApiParam, ApiCookieAuth,
@@ -7,6 +7,7 @@ import {
 import { JwtAuthGuard } from '@libs/nest-jwt';
 import { Request } from 'express';
 import { GameSessionDto } from './game-session.dto';
+import { CreateGameSessionDto } from './create-game-session.dto';
 import { GameSessionService } from '../domain/game-session.service';
 
 interface RequestWithUser extends Request {
@@ -45,10 +46,12 @@ export class GameSessionController {
     status: 401,
     description: 'Unauthorized.',
   })
-  public async createGameSession(): Promise<GameSessionDto> {
+  public async createGameSession(
+    @Body() dto: CreateGameSessionDto,
+  ): Promise<GameSessionDto> {
     this.logger.log('POST /v1/games - create game session');
 
-    const session = await this.gameSessionService.createGameSession();
+    const session = await this.gameSessionService.createGameSession(dto.mapSize, dto.playersCount);
 
     return session;
   }

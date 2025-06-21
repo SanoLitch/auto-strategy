@@ -13,5 +13,18 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "prisma.fileWatcher": true
+  "prisma.fileWatcher": true,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 6432,
+      "driver": "PostgreSQL",
+      "name": "auto_strategy",
+      "group": "localhost",
+      "database": "auto_strategy",
+      "username": "admin",
+      "password": "password"
+    }
+  ]
 }
