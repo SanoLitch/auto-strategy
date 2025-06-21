@@ -3,6 +3,7 @@ import { Logger } from 'nestjs-pino';
 import {
   DocumentBuilder, SwaggerModule,
 } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './core/http-exception.filter';
 import { DomainExceptionFilter } from './core/domain-exception.filter';
@@ -10,6 +11,7 @@ import { DomainExceptionFilter } from './core/domain-exception.filter';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
+  app.use(cookieParser());
   app.useLogger(app.get(Logger));
   app.useGlobalFilters(
     new DomainExceptionFilter(),
