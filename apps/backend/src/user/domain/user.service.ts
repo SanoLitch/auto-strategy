@@ -1,7 +1,6 @@
 import {
-  Injectable, UnauthorizedException, ConflictException, Logger,
+  Injectable, UnauthorizedException, ConflictException, Logger, NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import {
   TokenService, type TokenWithExpiry,
 } from '@libs/nest-jwt';
@@ -23,16 +22,11 @@ export class UserService {
 
   public async register(dto: RegisterDto): Promise<UserDto> {
     this.logger.log(`Register user: ${ dto.email }`);
-    try {
-      await this.userRepository.findByEmail(dto.email);
+
+    const userExists = await this.userRepository.existsByEmail(dto.email);
+
+    if (userExists) {
       throw new ConflictException('Email already exists');
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        // Ожидаемое поведение: пользователь не найден, продолжаем.
-      } else {
-        this.logger.error(`Error during registration: ${ error }`);
-        throw error;
-      }
     }
 
     const newUser = await User.create({
@@ -40,9 +34,7 @@ export class UserService {
       password: dto.password,
     });
 
-    const persistenceData = UserMapper.toPersistence(newUser);
-
-    await this.userRepository.create(persistenceData);
+    await this.userRepository.create(UserMapper.toPersistence(newUser));
 
     this.logger.log(`User registered: ${ dto.email }`);
 
@@ -55,17 +47,16 @@ export class UserService {
     try {
       const userPrisma = await this.userRepository.findByEmail(dto.email);
       const userEntity = UserMapper.toEntity(userPrisma);
+
       const isPasswordMatching = await userEntity.isPasswordMatching(dto.password);
 
       if (!isPasswordMatching) {
-        this.logger.warn(`Invalid credentials for: ${ dto.email }`);
-
         throw new UnauthorizedException('Invalid credentials');
       }
 
       const payload = {
         email: userEntity.email,
-        sub: userEntity.id,
+        sub: userEntity.id.getValue(),
       };
       const access = this.tokenService.generateAccessToken(payload);
       const refresh = this.tokenService.generateRefreshToken(payload);
@@ -77,33 +68,27 @@ export class UserService {
         refresh,
       };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        this.logger.warn(`User not found for login: ${ dto.email }`);
-
+      if (error instanceof NotFoundException) {
+        this.logger.warn(`Login attempt for non-existent user: ${ dto.email }`);
         throw new UnauthorizedException('Invalid credentials');
       }
       this.logger.error(`Login error for ${ dto.email }: ${ error }`);
-
       throw error;
     }
   }
 
   public async getMe(userFromJwt: { sub: string }): Promise<UserDto> {
     this.logger.log(`Get current user: ${ userFromJwt.sub }`);
-
     try {
       const userPrisma = await this.userRepository.findById(userFromJwt.sub);
-      const userEntity = UserMapper.toEntity(userPrisma);
 
-      return UserMapper.toDto(userEntity);
+      return UserMapper.toDto(UserMapper.toEntity(userPrisma));
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      if (error instanceof NotFoundException) {
         this.logger.warn(`User from JWT not found: ${ userFromJwt.sub }`);
-
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('User not found');
       }
       this.logger.error(`Error in getMe: ${ error }`);
-
       throw error;
     }
   }
