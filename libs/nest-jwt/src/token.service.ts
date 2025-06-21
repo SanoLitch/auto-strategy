@@ -15,6 +15,7 @@ export class TokenService {
     const expiresInStr = this.configService.getOrThrow('ACCESS_TOKEN_EXPIRES_IN', { infer: true });
     const expiresIn = this.parseExpiresInToMs(expiresInStr);
     const token = this.jwtService.sign(payload);
+
     return { token, expiresIn };
   }
 
@@ -22,15 +23,20 @@ export class TokenService {
     const expiresInStr = this.configService.getOrThrow('REFRESH_TOKEN_EXPIRES_IN', { infer: true });
     const expiresIn = this.parseExpiresInToMs(expiresInStr);
     const token = this.jwtService.sign(payload, { expiresIn: expiresInStr });
+
     return { token, expiresIn };
   }
 
   private parseExpiresInToMs(expiresIn: string): number {
     // Поддержка форматов: '3600', '1h', '7d', '30m', '10s'
     const match = expiresIn.match(/^(\d+)([smhd]?)$/);
-    if (!match) return Number(expiresIn) * 1000 || 3600 * 1000;
+
+    if (!match) {
+      return Number(expiresIn) * 1000 || 3600 * 1000
+    };
     const value = Number(match[1]);
     const unit = match[2];
+
     switch (unit) {
       case 's': return value * 1000;
       case 'm': return value * 60 * 1000;

@@ -1,20 +1,15 @@
 import {
-  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards, Req, Body,
+  Controller, Get, Post, Param, HttpCode, HttpStatus, Logger, UseGuards, Body,
 } from '@nestjs/common';
 import {
   ApiTags, ApiOperation, ApiResponse, ApiParam, ApiCookieAuth,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@libs/nest-jwt';
-import { Request } from 'express';
+import {
+  JwtAuthGuard, UserId,
+} from '@libs/nest-jwt';
 import { GameSessionDto } from './game-session.dto';
 import { CreateGameSessionDto } from './create-game-session.dto';
 import { GameSessionService } from '../domain/game-session.service';
-
-interface RequestWithUser extends Request {
-  user: {
-    sub: string;
-  };
-}
 
 @ApiTags('Game Session')
 @Controller('v1/games')
@@ -83,10 +78,8 @@ export class GameSessionController {
   })
   public async joinGameSession(
     @Param('id') sessionId: string,
-    @Req() req: RequestWithUser,
+    @UserId() userId: string,
   ): Promise<void> {
-    const userId = req.user.sub;
-
     this.logger.log(`POST /v1/games/${ sessionId }/players - userId: ${ userId } requests to join`);
 
     await this.gameSessionService.requestToJoinSession(userId, sessionId);

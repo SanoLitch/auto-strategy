@@ -7,7 +7,9 @@ import {
 import {
   ApiBody, ApiOperation, ApiResponse, ApiTags, ApiCookieAuth,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@libs/nest-jwt';
+import {
+  JwtAuthGuard, UserId,
+} from '@libs/nest-jwt';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './register.dto';
 import { LoginDto } from './login.dto';
@@ -104,9 +106,9 @@ export class UserController {
     status: 401,
     description: 'Unauthorized.',
   })
-  public async me(@Req() req: RequestWithUser): Promise<UserDto> {
-    this.logger.log(`GET /v1/users/me - user: ${ req.user.sub }`);
+  public async me(@UserId() userId: string): Promise<UserDto> {
+    this.logger.log(`GET /v1/users/me - user: ${ userId }`);
 
-    return this.userService.getMe(req.user);
+    return this.userService.getMe(userId);
   }
 }

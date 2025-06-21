@@ -53,7 +53,6 @@ export class UserService {
       if (!isPasswordMatching) {
         throw new UnauthorizedException('Invalid credentials');
       }
-
       const payload = {
         email: userEntity.email,
         sub: userEntity.id.getValue(),
@@ -70,25 +69,30 @@ export class UserService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         this.logger.warn(`Login attempt for non-existent user: ${ dto.email }`);
+
         throw new UnauthorizedException('Invalid credentials');
       }
       this.logger.error(`Login error for ${ dto.email }: ${ error }`);
+
       throw error;
     }
   }
 
-  public async getMe(userFromJwt: { sub: string }): Promise<UserDto> {
-    this.logger.log(`Get current user: ${ userFromJwt.sub }`);
+  public async getMe(userId: string): Promise<UserDto> {
+    this.logger.log(`Get current user: ${ userId }`);
+
     try {
-      const userPrisma = await this.userRepository.findById(userFromJwt.sub);
+      const userPrisma = await this.userRepository.findById(userId);
 
       return UserMapper.toDto(UserMapper.toEntity(userPrisma));
     } catch (error) {
       if (error instanceof NotFoundException) {
-        this.logger.warn(`User from JWT not found: ${ userFromJwt.sub }`);
+        this.logger.warn(`User from JWT not found: ${ userId }`);
+
         throw new UnauthorizedException('User not found');
       }
       this.logger.error(`Error in getMe: ${ error }`);
+
       throw error;
     }
   }
