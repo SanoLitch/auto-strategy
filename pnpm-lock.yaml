@@ -175,6 +175,9 @@ importers:
 
   libs/domain-primitives:
     dependencies:
+      '@libs/utils':
+        specifier: workspace:*
+        version: link:../utils
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3

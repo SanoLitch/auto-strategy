@@ -9,6 +9,7 @@
     "pipeline:build": "tsc"
   },
   "dependencies": {
+    "@libs/utils": "workspace:*",
     "bcryptjs": "^2.4.3"
   },
   "devDependencies": {

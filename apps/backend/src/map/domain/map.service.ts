@@ -14,12 +14,6 @@ import { MapDto } from '../api/map.dto';
 import { MapMapper } from '../lib/map.mapper';
 import { AppEventNames } from '../../core';
 
-interface MapGenerateEventPayload {
-  sessionId: string;
-  size: Vector2;
-  playersCount: number;
-}
-
 @Injectable()
 export class MapService {
   private readonly logger = new Logger(MapService.name);
@@ -30,7 +24,11 @@ export class MapService {
   ) { }
 
   @OnEvent(AppEventNames.MAP_GENERATE)
-  public async handleMapGenerateEvent(payload: MapGenerateEventPayload): Promise<void> {
+  public async handleMapGenerateEvent(payload: {
+    sessionId: string;
+    size: Vector2;
+    playersCount: number;
+  }): Promise<void> {
     const {
       sessionId, playersCount, size,
     } = payload;
@@ -81,7 +79,6 @@ export class MapService {
     this.logger.log(`Get map by id: ${ id }`);
 
     const mapDb = await this.mapRepository.findMapById(id);
-
     const map = MapMapper.toEntity(mapDb);
 
     return MapMapper.toDto(map);

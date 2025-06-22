@@ -1,7 +1,9 @@
 import { Map as MapDb } from '@prisma/client';
-import { Uuid } from '@libs/domain-primitives';
 import {
-  Map, TerrainType, MapSize, SpawnPoint,
+  MapSize, Uuid, SpawnPoint,
+} from '@libs/domain-primitives';
+import {
+  Map, TerrainType,
 } from '../domain/map.entity';
 import { MapDto } from '../api/map.dto';
 
