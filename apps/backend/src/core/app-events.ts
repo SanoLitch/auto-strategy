@@ -1,3 +1,5 @@
+import { type Vector2 } from '@libs/utils';
+
 export enum AppEventNames {
   MAP_GENERATE = 'map.generate',
   MAP_GENERATED = 'map.generated',
@@ -9,7 +11,7 @@ export enum AppEventNames {
 export interface AppEvents {
   [AppEventNames.MAP_GENERATE]: {
     sessionId: string;
-    size: { width: number; height: number };
+    size: Vector2;
     playersCount: number;
   };
   [AppEventNames.MAP_GENERATED]: [sessionId: string, mapId: string];

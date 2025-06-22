@@ -2,8 +2,10 @@ model Map {
   id            String      @id @default(uuid())
   gameSessionId String      @unique @map("game_session_id")
   gameSession   GameSession @relation(fields: [gameSessionId], references: [id])
+  /// [Vector2Db]
   size          Json
   terrainData   Json        @map("terrain_data")
+  /// [Vector2ArrayDb]
   spawnPoints   Json        @map("spawn_points")
 
   @@map("maps")

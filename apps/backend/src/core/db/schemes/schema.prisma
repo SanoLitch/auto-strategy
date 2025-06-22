@@ -6,3 +6,7 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+generator json {
+  provider = "prisma-json-types-generator"
+}

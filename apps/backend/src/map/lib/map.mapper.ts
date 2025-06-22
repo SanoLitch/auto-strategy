@@ -1,6 +1,4 @@
-import {
-  Map as MapDb, Prisma,
-} from '@prisma/client';
+import { Map as MapDb } from '@prisma/client';
 import { Uuid } from '@libs/domain-primitives';
 import {
   Map, TerrainType, MapSize, SpawnPoint,
@@ -13,7 +11,7 @@ export class MapMapper {
       id: new Uuid(mapDb.id),
       size: MapSize.fromJSON(mapDb.size),
       terrainData: mapDb.terrainData as TerrainType[][],
-      spawnPoints: (mapDb.spawnPoints as Prisma.JsonArray).map(point => SpawnPoint.fromJSON(point)),
+      spawnPoints: mapDb.spawnPoints.map(point => SpawnPoint.fromJSON(point)),
     });
   }
 
@@ -30,7 +28,10 @@ export class MapMapper {
   public static toDto(map: Map): MapDto {
     return {
       id: map.id.getValue(),
-      size: map.size,
+      size: {
+        width: map.size.x,
+        height: map.size.y,
+      },
       terrainData: map.terrainData,
       spawnPoints: map.spawnPoints.map(({ point: [x, y] }) => ({
         x,

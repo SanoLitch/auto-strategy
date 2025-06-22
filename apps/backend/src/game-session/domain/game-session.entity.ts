@@ -6,7 +6,6 @@ import {
   SessionIsFullError,
   SessionIsEmptyError,
   SessionStartInWrongStatusError,
-  SessionMapSetInWrongStatusError,
 } from '@libs/utils';
 import { Player } from '../../player/domain/player.entity';
 import { Map } from '../../map/domain/map.entity';
@@ -63,14 +62,6 @@ export class GameSession {
       players: [],
       map: null,
     });
-  }
-
-  public assignMap(map: Map): void {
-    if (this.status !== GameSessionStatus.GeneratingMap) {
-      throw new SessionMapSetInWrongStatusError(this.id.getValue(), this.status);
-    }
-    this._map = map;
-    this.status = GameSessionStatus.Waiting;
   }
 
   public canAddPlayer(userId: Uuid): void {

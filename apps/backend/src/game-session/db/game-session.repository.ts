@@ -27,22 +27,6 @@ export class GameSessionRepository {
     });
   }
 
-  public async setMap(
-    sessionId: string,
-    mapId: string,
-  ): Promise<GameSessionDb> {
-    return this.db.gameSession.update({
-      where: { id: sessionId },
-      data: {
-        map: {
-          connect: {
-            id: mapId,
-          },
-        },
-      },
-    });
-  }
-
   public async findById(sessionId: string): Promise<GameSessionWithRelations> {
     return this.db.gameSession.findUniqueOrThrow({
       where: { id: sessionId },

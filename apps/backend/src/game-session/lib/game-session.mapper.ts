@@ -1,6 +1,5 @@
 import { GameSession as GameSessionDb } from '@prisma/client';
 import { Uuid } from '@libs/domain-primitives';
-import { Prisma } from '@prisma/client';
 import {
   GameSession, GameSessionStatus,
 } from '../domain/game-session.entity';
@@ -10,34 +9,26 @@ import { PlayerMapper } from '../../player/lib/player.mapper';
 import { MapMapper } from '../../map/lib/map.mapper';
 
 export class GameSessionMapper {
-  public static toEntity(db: GameSessionWithRelations): GameSession {
-    const players = db.players.map(p => PlayerMapper.toEntity(p));
-    const map = db.map ? MapMapper.toEntity(db.map) : null;
+  public static toEntity(sessionAggregateDb: GameSessionWithRelations): GameSession {
+    const players = sessionAggregateDb.players.map(player => PlayerMapper.toEntity(player));
+    const map = sessionAggregateDb.map ? MapMapper.toEntity(sessionAggregateDb.map) : null;
 
     return new GameSession({
-      id: new Uuid(db.id),
-      status: db.status as GameSessionStatus,
-      createdAt: db.createdAt,
-      finishedAt: db.finishedAt ?? undefined,
+      id: new Uuid(sessionAggregateDb.id),
+      status: sessionAggregateDb.status as GameSessionStatus,
+      createdAt: sessionAggregateDb.createdAt,
+      finishedAt: sessionAggregateDb.finishedAt ?? undefined,
       players,
       map,
     });
   }
 
-  public static toPersistenceForCreate(entity: GameSession): Prisma.GameSessionCreateInput {
+  public static toPersistence(entity: GameSession): GameSessionDb {
     return {
       id: entity.id.getValue(),
       status: entity.status,
       createdAt: entity.createdAt,
-    };
-  }
-
-  public static toPersistence(entity: GameSession): Partial<GameSessionDb> {
-    return {
-      id: entity.id.getValue(),
-      status: entity.status,
-      createdAt: entity.createdAt,
-      finishedAt: entity.finishedAt,
+      finishedAt: entity.finishedAt ?? null,
     };
   }
 

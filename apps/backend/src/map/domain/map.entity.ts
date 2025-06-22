@@ -1,31 +1,32 @@
-import { Prisma } from '@prisma/client';
 import { Uuid } from '@libs/domain-primitives';
+import {
+  type Vector2, type Vector2Tuple, isVector2,
+} from '@libs/utils';
 
 export class MapSize {
-  public readonly width: number;
-  public readonly height: number;
+  public readonly x: number;
+  public readonly y: number;
 
-  constructor(width: number, height: number) {
-    if (width <= 0 || height <= 0) {
+  constructor(x: number, y: number) {
+    if (x <= 0 || y <= 0) {
       throw new Error('MapSize: width and height must be positive');
     }
-    this.width = width;
-    this.height = height;
+    this.x = x;
+    this.y = y;
   }
 
-  public toJSON(): { width: number; height: number } {
+  public toJSON(): Vector2 {
     return {
-      width: this.width,
-      height: this.height,
+      x: this.x,
+      y: this.y,
     };
   }
 
-  public static fromJSON(json: Prisma.JsonValue): MapSize {
-    const {
-      width, height,
-    } = json as Prisma.JsonObject;
-
-    return new MapSize(Number(width), Number(height));
+  public static fromJSON(json: unknown): MapSize {
+    if (!isVector2(json)) {
+      throw new Error('Failed to create SpawnPoint from JSON');
+    }
+    return new MapSize(Number(json.x), Number(json.y));
   }
 }
 
@@ -38,23 +39,22 @@ export class SpawnPoint {
     this.y = y;
   }
 
-  public get point() {
+  public get point(): Vector2Tuple {
     return [this.x, this.y];
   }
 
-  public toJSON(): { x: number; y: number } {
+  public toJSON(): Vector2 {
     return {
       x: this.x,
       y: this.y,
     };
   }
 
-  public static fromJSON(json: Prisma.JsonValue): SpawnPoint {
-    const {
-      x, y,
-    } = json as Prisma.JsonObject;
-
-    return new SpawnPoint(Number(x), Number(y));
+  public static fromJSON(json: unknown): SpawnPoint {
+    if (!isVector2(json)) {
+      throw new Error('Failed to create SpawnPoint from JSON');
+    }
+    return new SpawnPoint(Number(json.x), Number(json.y));
   }
 }
 
@@ -89,8 +89,8 @@ export class Map {
       TerrainType.Bedrock,
     ];
 
-    this.terrainData = Array.from({ length: this.size.height }, () =>
-      Array.from({ length: this.size.width }, () =>
+    this.terrainData = Array.from({ length: this.size.y }, () =>
+      Array.from({ length: this.size.x }, () =>
         types[Math.floor(Math.random() * types.length)] as TerrainType));
   }
 
@@ -98,9 +98,9 @@ export class Map {
     const points: SpawnPoint[] = [];
 
     if (playersCount >= 1) points.push(new SpawnPoint(1, 1));
-    if (playersCount >= 2) points.push(new SpawnPoint(this.size.width - 2, this.size.height - 2));
-    if (playersCount >= 3) points.push(new SpawnPoint(1, this.size.height - 2));
-    if (playersCount >= 4) points.push(new SpawnPoint(this.size.width - 2, 1));
+    if (playersCount >= 2) points.push(new SpawnPoint(this.size.x - 2, this.size.y - 2));
+    if (playersCount >= 3) points.push(new SpawnPoint(1, this.size.y - 2));
+    if (playersCount >= 4) points.push(new SpawnPoint(this.size.x - 2, 1));
 
     this.spawnPoints = points;
   }

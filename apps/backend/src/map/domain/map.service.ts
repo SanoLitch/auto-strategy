@@ -4,6 +4,7 @@ import {
 import {
   EventEmitter2, OnEvent,
 } from '@nestjs/event-emitter';
+import { type Vector2 } from '@libs/utils';
 import { Worker } from 'worker_threads';
 import {
   TerrainType,
@@ -15,7 +16,7 @@ import { AppEventNames } from '../../core';
 
 interface MapGenerateEventPayload {
   sessionId: string;
-  size: { width: number; height: number };
+  size: Vector2;
   playersCount: number;
 }
 
@@ -51,7 +52,7 @@ export class MapService {
 
     const result = await new Promise<{
       terrainData: TerrainType[][];
-      spawnPoints: { x: number; y: number };
+      spawnPoints: Vector2[];
     }>((resolve, reject) => {
       worker.on('message', resolve);
       worker.on('error', reject);

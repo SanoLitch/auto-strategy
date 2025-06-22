@@ -1,3 +1,4 @@
 {
-  "extends": "@libs/typescript-config/nest.json"
+  "extends": "@libs/typescript-config/nest.json",
+  "include": ["**/*", "**/*.d.ts"]
 }

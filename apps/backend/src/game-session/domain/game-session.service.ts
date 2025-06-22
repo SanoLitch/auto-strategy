@@ -5,6 +5,7 @@ import {
   EventEmitter2, OnEvent,
 } from '@nestjs/event-emitter';
 import { Uuid } from '@libs/domain-primitives';
+import { type Vector2 } from '@libs/utils';
 import { GameSession } from './game-session.entity';
 import { GameSessionRepository } from '../db/game-session.repository';
 import { GameSessionMapper } from '../lib/game-session.mapper';
@@ -28,9 +29,9 @@ export class GameSessionService {
     this.logger.log('Create new game session');
 
     const session = GameSession.create();
-    const persistenceModel = GameSessionMapper.toPersistenceForCreate(session);
+    const sessionDb = GameSessionMapper.toPersistence(session);
 
-    await this.gameSessionRepository.create(persistenceModel);
+    await this.gameSessionRepository.create(sessionDb);
 
     this.logger.log(`Game session created: id=${ session.id.getValue() }`);
     this.logger.log(`Emit map.generate event for sessionId=${ session.id.getValue() }`);
@@ -38,9 +39,9 @@ export class GameSessionService {
     this.eventEmitter.emit(AppEventNames.MAP_GENERATE, {
       sessionId: session.id.getValue(),
       size: {
-        width: size,
-        height: size,
-      },
+        x: size,
+        y: size,
+      } satisfies Vector2,
       playersCount,
     } satisfies AppEvents[AppEventNames.MAP_GENERATE]);
 
