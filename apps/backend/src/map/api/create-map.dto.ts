@@ -1,5 +1,5 @@
 import {
-  IsObject, IsNumber, IsPositive, Min, Max,
+  IsObject, IsNumber, IsPositive, Min, Max, IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -35,6 +35,9 @@ export class CreateMapDto {
     type: CreateMapSizeDto,
   })
   @IsObject()
+  // @IsNotEmpty()
+  // @ValidateNested()
+  // @Type(() => CreateMapSizeDto)
   public size: CreateMapSizeDto;
 
   @ApiProperty({

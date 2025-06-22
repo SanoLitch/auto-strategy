@@ -5,7 +5,7 @@ import { DbService } from '../../core';
 @Injectable()
 export class PlayerRepository {
   constructor(private readonly db: DbService) {}
-
+  // С призмой особо не работал, я бы доавбил лио глобальный erron-handler и exception-filter для обработки ошибок http, websocket, и бд
   public async create(data: PlayerDb): Promise<PlayerDb> {
     return this.db.player.create({ data });
   }
