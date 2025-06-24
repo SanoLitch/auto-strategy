@@ -50,8 +50,14 @@
       "persistent": false
     },
     "pipeline:build": {
+      "dependsOn": [
+        "^prisma:generate"
+      ],
       "cache": true,
-      "persistent": false
+      "persistent": false,
+      "outputs": [
+        "dist/**"
+      ]
     },
     "prisma:migrate": {
       "with": [

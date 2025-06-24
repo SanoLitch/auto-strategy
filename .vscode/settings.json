@@ -26,5 +26,17 @@
       "username": "admin",
       "password": "password"
     }
-  ]
+  ],
+  "prisma.scriptRunner": "pnpm",
+  "prisma.schemaPath": "/apps/backend/src/core/db/schemes/schema.prisma",
+  "prisma.trace.server": "messages",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.(prisma)$",
+        "cmd": "turbo run prisma:generate",
+        "background": true
+      }
+    ]
+  }
 }
