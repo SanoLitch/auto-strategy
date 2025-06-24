@@ -53,14 +53,14 @@ export class GameSessionService {
     this.logger.log(`Update session after map generated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
     try {
-      await this.gameSessionRepository.update(sessionId, { status: 'WAITING' });
+      await this.gameSessionRepository.update(sessionId, { status: 'WAITING' }); // Тут неплохо бы использовать enum для передачи значения
     } catch (e) {
       this.logger.error(`Unable to set session in status, sessionId=${ sessionId }, status=${ mapId }`);
       throw e;
     }
     this.logger.log(`Session updated: sessionId=${ sessionId }, mapId=${ mapId }`);
 
-    this.onGameSessionChanged(sessionId);
+    await this.onGameSessionChanged(sessionId);
   }
 
   public async requestToJoinSession(userId: string, sessionId: string): Promise<void> {

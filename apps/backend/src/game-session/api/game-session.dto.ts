@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {
-  IsUUID, IsEnum, IsDateString, IsOptional,
+  IsUUID, IsEnum, IsDateString, IsOptional, IsNotEmpty,
 } from 'class-validator';
 import { GameSessionStatus } from '../domain/game-session.entity';
 
@@ -10,6 +10,7 @@ export class GameSessionDto {
     example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
   })
   @IsUUID()
+  // @IsNotEmpty() Если параметр обязательный, лучше всего добавлять декоратор
   public id: string;
 
   @ApiProperty({
@@ -18,6 +19,12 @@ export class GameSessionDto {
     required: false,
     nullable: true,
   })
+  // @ApiPropertyOptional({
+  //   description: 'Identifier of the map for this session (UUID)',
+  //   example: 'b2c3d4e5-f6a7-8901-2345-67890abcdef1',
+  //   required: false,
+  //   nullable: true,
+  // }) Чисто улучшение для работы со сваггером, для необязательных параметров лучше использовать @ApiPropertyOptional
   @IsUUID()
   @IsOptional()
   public mapId: string | null;
@@ -28,6 +35,7 @@ export class GameSessionDto {
     example: GameSessionStatus.Waiting,
   })
   @IsEnum(GameSessionStatus)
+  // @IsNotEmpty() Если параметр обязательный, лучше всего добавлять декоратор
   public status: GameSessionStatus;
 
   @ApiProperty({
@@ -35,6 +43,7 @@ export class GameSessionDto {
     example: '2023-10-27T10:00:00.000Z',
   })
   @IsDateString()
+  // @IsNotEmpty() Если параметр обязательный, лучше всего добавлять декоратор
   public createdAt: string;
 
   @ApiProperty({

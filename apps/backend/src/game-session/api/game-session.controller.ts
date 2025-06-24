@@ -77,6 +77,19 @@ export class GameSessionController {
     description: 'Conflict. Session is full or not accepting new players.',
   })
   public async joinGameSession(
+    /*
+    Для параметров можно описать класс, чтобы была возможность тонкой валидации и вывода кастомной ошибки при введении некорректного значения
+    Особенно полезно, если будешь передавать какие-то enum в парамс
+    class IdParamsDto {
+      @ApiProperty()
+      @IsUUID()
+      @IsNotEmpty()
+      id: string
+    }
+    Это не обязательно, но повышает уровень защиты от дурака
+     @Param() paramsDto: IdParamsDto,
+     Для примера
+    */
     @Param('id') sessionId: string,
     @UserId() userId: string,
   ): Promise<void> {

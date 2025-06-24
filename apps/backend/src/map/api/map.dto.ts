@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsUUID, IsObject, IsArray, IsEnum,
+  IsUUID, IsObject, IsArray, IsEnum, ValidateNested, IsNotEmpty,
 } from 'class-validator';
 import { TerrainType } from '../domain/map.entity';
+import {Type} from "class-transformer";
 
+// Тут общая рекомендация по структуре описания dto, каждый класс dto описывать в своем файле, так удобнее будет описывать их, дополнять, расширять
 class MapSizeDto {
   @ApiProperty({
     description: 'Width of the map',
@@ -80,6 +82,9 @@ export class MapDto {
     description: 'List of spawn points for players',
     type: [SpawnPointDto],
   })
-  @IsArray()
+  @IsArray()  // Если оставить только этот декоратор, то по сути ты сможешь сюда записать хоть массив строк через постман и ошибки не будет
+  // @IsNotEmpty()
+  // @ValidateNested({each: true})
+  // @Type(() =>SpawnPointDto )
   public spawnPoints: SpawnPointDto[];
 }

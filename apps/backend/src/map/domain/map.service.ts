@@ -46,7 +46,7 @@ export class MapService {
           playersCount,
         },
       },
-    );
+    ); // тут можно столкнуть с backpressure, лучше избегать создание нового воркера при каждом событии, особенно если карта будет большая и тд, попробуй https://www.npmjs.com/package/piscina
 
     const result = await new Promise<{
       terrainData: TerrainType[][];
@@ -57,7 +57,7 @@ export class MapService {
       worker.on('exit', code => {
         if (code !== 0) {
           reject(new Error(`Worker stopped with code ${ code }`));
-        };
+        }
       });
     });
 
@@ -68,6 +68,7 @@ export class MapService {
       terrainData: result.terrainData,
       spawnPoints: result.spawnPoints,
     });
+
     const mapDb = await this.mapRepository.createMap(MapMapper.toPersistence(map, payload.sessionId));
 
     this.eventEmitter.emit(AppEventNames.MAP_GENERATED, payload.sessionId, mapDb.id);
