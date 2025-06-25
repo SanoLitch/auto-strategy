@@ -43,6 +43,36 @@ export class MapController {
     return this.mapService.getMapById(id);
   }
 
+  @Get(':id/ascii')
+  @ApiOperation({ summary: 'Get map as ASCII art' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'Map ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the map in ASCII art format.',
+    type: 'string',
+  })
+  public async getMapAsAscii(@Param('id') id: string): Promise<string> {
+    this.logger.log(`GET /v1/maps/${ id }/ascii`);
+
+    const map = await this.mapService.getMapById(id);
+
+    const asciiMap = map.terrainData.map(row =>
+      row.map(cell => {
+        switch (cell) {
+        case 'Rock': return '#';
+        case 'Bedrock': return 'X';
+        default: return '.';
+        }
+      }).join('')).join('\n');
+
+    return asciiMap;
+  }
+
   @Get('admin/test')
   @ApiOperation({ summary: 'Test endpoint for Map module' })
   public test(): string {
