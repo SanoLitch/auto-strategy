@@ -100,6 +100,10 @@
 - `Dirt` - Земля
 - `Rock` - Камень
 - `Bedrock` - Скальная порода
+- `Empty` - Пустая ячейка (результат раскопки)
+- `GoldCluster` - Скопление золота
+- `CrystalCluster` - Кристаллическое скопление
+- `IronCluster` - Железное скопление
 
 **Пример объекта:**
 
@@ -111,9 +115,9 @@
     "height": 100
   },
   "terrainData": [
-    ["Dirt", "Rock", "Dirt"],
-    ["Bedrock", "Dirt", "Rock"],
-    ["Dirt", "Dirt", "Bedrock"]
+    ["Empty", "Empty", "Empty", "Dirt", "GoldCluster"],
+    ["Empty", "Empty", "Empty", "Rock", "IronCluster"],
+    ["Empty", "Empty", "Dirt", "CrystalCluster", "Bedrock"]
   ],
   "spawnPoints": [
     {"x": 1, "y": 1},
@@ -121,6 +125,8 @@
   ]
 }
 ```
+
+> **Примечание:** В примере показана стартовая зона вокруг точки спавна (1,1) с `Empty` ячейками для немедленного строительства.
 
 ---
 

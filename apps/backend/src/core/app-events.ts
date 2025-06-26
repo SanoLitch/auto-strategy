@@ -6,6 +6,9 @@ export enum AppEventNames {
   PLAYER_CREATED = 'player.created',
   PLAYER_JOINING = 'player.joining',
   GAME_SESSION_CHANGED = 'game-session.changed',
+  RESOURCE_MINED = 'resource.mined',
+  RESOURCE_DEPLETED = 'resource.depleted',
+  TERRAIN_DUG = 'terrain.dug',
 }
 
 export interface AppEvents {

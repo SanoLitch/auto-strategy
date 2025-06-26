@@ -64,9 +64,14 @@ export class MapController {
     const asciiMap = map.terrainData.map(row =>
       row.map(cell => {
         switch (cell) {
+        case 'Dirt': return '.';
         case 'Rock': return '#';
         case 'Bedrock': return 'X';
-        default: return '.';
+        case 'Empty': return ' ';
+        case 'GoldCluster': return 'G';
+        case 'CrystalCluster': return 'C';
+        case 'IronCluster': return 'I';
+        default: return '?';
         }
       }).join('')).join('\n');
 
