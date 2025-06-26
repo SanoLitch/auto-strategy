@@ -15,6 +15,7 @@ Auto Strategy - это многопользовательская стратег
 ## Архитектура
 
 ### Monorepo структура
+
 ```
 auto-strategy/
 ├── apps/
@@ -29,6 +30,7 @@ auto-strategy/
 ```
 
 ### Backend модули
+
 - **User**: Аутентификация и управление пользователями
 - **GameSession**: Игровые сессии и их жизненный цикл
 - **Map**: Генерация и управление игровыми картами
@@ -39,6 +41,7 @@ auto-strategy/
 ## Технологический стек
 
 ### Backend
+
 - **Framework**: NestJS
 - **Database**: PostgreSQL с Prisma ORM
 - **Authentication**: JWT с HttpOnly cookies
@@ -47,12 +50,14 @@ auto-strategy/
 - **Documentation**: Swagger/OpenAPI
 
 ### Frontend
+
 - **Framework**: React с TypeScript
 - **Build Tool**: Vite
 - **State Management**: React Context + Hooks
 - **Styling**: CSS Modules
 
 ### Общие
+
 - **Package Manager**: pnpm
 - **Monorepo**: Turborepo
 - **Testing**: Jest
@@ -61,11 +66,13 @@ auto-strategy/
 ## API Endpoints
 
 ### Аутентификация
+
 - `POST /v1/users` - Регистрация
 - `POST /v1/users/login` - Вход в систему
 - `GET /v1/users/me` - Профиль пользователя
 
 ### Игровые сессии
+
 - `POST /v1/sessions` - Создание сессии
 - `GET /v1/sessions/{id}` - Получение сессии
 - `POST /v1/sessions/{id}/players` - Присоединение к сессии
@@ -89,6 +96,7 @@ auto-strategy/
 ## Последние обновления
 
 ### Исправления документации (текущая сессия)
+
 - ✅ Исправлены пути API аутентификации (`/v1/users` вместо `/api/v1/auth/*`)
 - ✅ Обновлены статусы игровых сессий согласно реальной реализации
 - ✅ Исправлено описание PlayerDto (isWinner как Boolean, а не Boolean | undefined)
@@ -100,11 +108,13 @@ auto-strategy/
 ## Разработка
 
 ### Установка зависимостей
+
 ```bash
 pnpm install
 ```
 
 ### Запуск в development режиме
+
 ```bash
 # Backend
 pnpm --filter backend dev
@@ -114,6 +124,7 @@ pnpm --filter frontend dev
 ```
 
 ### Сборка проекта
+
 ```bash
 pnpm build
 ```
@@ -128,3 +139,4 @@ pnpm build
 - [Аналитика игровых сессий](06_game_session_analytics.md)
 - [Аналитика карт](07_map_analytics.md)
 - [Аналитика игроков](08_player_analytics.md)
+- **[План рефакторинга системы карт](09_map_optimization_refactoring_plan.md)** ⚠️ TODO

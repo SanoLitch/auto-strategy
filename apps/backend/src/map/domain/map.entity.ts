@@ -598,15 +598,14 @@ export class Map {
     // Если игроков 2, размещаем по диагонали
     if (playersCount === 2) {
       positions.push(cornerPositions[0], cornerPositions[3]);
-    }
-    // Если игроков 3-4, используем углы
-    else if (playersCount <= 4) {
+      // Если игроков 3-4, используем углы
+    } else if (playersCount <= 4) {
       for (let i = 0; i < playersCount; i++) {
         positions.push(cornerPositions[i]);
       }
-    }
+    } else {
     // Если больше 4, добавляем позиции по краям
-    else {
+
       positions.push(...cornerPositions);
 
       const additionalCount = playersCount - 4;
