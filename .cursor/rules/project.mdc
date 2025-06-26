@@ -9,4 +9,10 @@ globs:
 alwaysApply: true
 ---
 
-This project is monorepo based on Turborepo lib. Repository splittied into packages into *apps/* for applications and services and *lib/* for common shared code, like libraries and tooling, *docs/* for project documentation.
+# Description
+This project is monorepo based on Turborepo lib. Repository splittied into packages into *apps/* for applications and services and *lib/* for common shared code, like libraries and tooling, *docs/* for project documentation. Each package has it's own dependecies.
+
+# Infrastructure
+- *PNPM* is used as package manager
+- Project is built with *Turborepo* over *PNMP Workspaces*
+- Turborepo cli is used to run scripts described in *turbo.json*
