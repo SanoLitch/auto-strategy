@@ -51,7 +51,7 @@
 ## 3. Жизненный цикл игровой сессии
 
 1. **Создание:**
-   Пользователь инициирует создание сессии через API (`POST /games`). Сессия создаётся со статусом `GENERATING_MAP`, поле `mapId` отсутствует (null).
+   Пользователь инициирует создание сессии через API (`POST /sessions`). Сессия создаётся со статусом `GENERATING_MAP`, поле `mapId` отсутствует (null).
 2. **Генерация карты:**
    Сервер асинхронно генерирует карту. После завершения генерации карта сохраняется, у сессии обновляется поле `mapId`, статус меняется на `WAITING`.
 3. **Присоединение игроков:**
@@ -69,7 +69,7 @@
 
 ### Создание сессии
 
-**POST /games**
+**POST /sessions**
 
 - Тело запроса не содержит параметров выбора карты, карта генерируется автоматически в фоне.
 
@@ -79,7 +79,7 @@
 
 ### Получение состояния сессии
 
-**GET /games/{gameId}**
+**GET /sessions/{sessionId}**
 
 - Возвращает текущее состояние сессии: если карта ещё не сгенерирована, `mapId` = null, статус = `GENERATING_MAP`.
 - После генерации карты возвращается актуальный объект с заполненным `mapId` и статусом `WAITING` или `IN_PROGRESS`.
@@ -106,7 +106,7 @@ sequenceDiagram
     participant DB as База данных
 
     User->>Client: Создать игровую сессию
-    Client->>Server: POST /games
+    Client->>Server: POST /sessions
     Server->>DB: Создать GameSession (status=GENERATING_MAP, mapId=null)
     DB-->>Server: Подтверждение
     Server-->>Client: 201 Created (GameSession)
@@ -115,7 +115,7 @@ sequenceDiagram
     DB-->>Server: Подтверждение
     Server-->>Client: WebSocket event: map_generated
     User->>Client: Присоединиться к сессии
-    Client->>Server: POST /games/{id}/players
+    Client->>Server: POST /sessions/{id}/players
     Server->>Server: Проверка (статус, лимит игроков)
     Server-->>Client: 202 Accepted
     Server->>Server: Событие 'player.create.request'

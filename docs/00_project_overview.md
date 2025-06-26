@@ -66,10 +66,10 @@ auto-strategy/
 - `GET /v1/users/me` - Профиль пользователя
 
 ### Игровые сессии
-- `POST /v1/games` - Создание сессии
-- `GET /v1/games/{id}` - Получение сессии
-- `POST /v1/games/{id}/players` - Присоединение к сессии
-- `POST /v1/games/{id}/buildings` - Строительство зданий
+- `POST /v1/sessions` - Создание сессии
+- `GET /v1/sessions/{id}` - Получение сессии
+- `POST /v1/sessions/{id}/players` - Присоединение к сессии
+- `POST /v1/sessions/{id}/buildings` - Строительство зданий
 
 ## Статусы игровых сессий
 

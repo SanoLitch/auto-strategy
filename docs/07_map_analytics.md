@@ -83,7 +83,7 @@ sequenceDiagram
     participant DB as База данных
 
     User->>Client: Запрос на создание игровой сессии
-    Client->>Server: POST /games
+    Client->>Server: POST /sessions
     Server->>DB: Создать GameSession (status=GENERATING_MAP, mapId=null)
     DB-->>Server: Подтверждение
     Server-->>Client: 201 Created (GameSession)

@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import { GameSessionDto } from './game-session.dto';
 
 @WebSocketGateway({
-  namespace: 'games',
+  namespace: 'sessions',
   cors: true,
 })
 export class GameSessionGateway {

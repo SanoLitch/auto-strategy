@@ -1,6 +1,4 @@
-import {
-  Controller, Get,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import {
   ApiTags, ApiOperation,
 } from '@nestjs/swagger';
@@ -13,12 +11,4 @@ export class PlayerController {
   private readonly logger = new Logger(PlayerController.name);
 
   constructor(private readonly playerService: PlayerService) {}
-
-  @Get('admin/test')
-  @ApiOperation({ summary: 'Test endpoint for Player module' })
-  public test(): string {
-    this.logger.log('GET /v1/players/admin/test');
-
-    return 'Player module is working';
-  }
 }

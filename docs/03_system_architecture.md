@@ -127,7 +127,7 @@ sequenceDiagram
     participant DB as База данных
 
     User->>Client: Кликает, чтобы построить Казарму в точке (x,y)
-    Client->>Server: POST /api/games/{id}/buildings (type: 'BARRACKS', position: {x,y})
+    Client->>Server: POST /api/sessions/{id}/buildings (type: 'BARRACKS', position: {x,y})
     activate Server
     Server->>DB: Проверить ресурсы игрока, создать запись о здании
     DB-->>Server: Запись создана
@@ -136,7 +136,7 @@ sequenceDiagram
 
     Client->>User: Отобразить здание на карте
     User->>Client: Рисует путь от Казармы
-    Client->>Server: PUT /api/games/{id}/buildings/{b_id} (path: [...])
+    Client->>Server: PUT /api/sessions/{id}/buildings/{b_id} (path: [...])
     activate Server
     Server->>DB: Обновить путь для здания
     DB-->>Server: Путь обновлен

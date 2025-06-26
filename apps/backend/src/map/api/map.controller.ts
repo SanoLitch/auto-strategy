@@ -72,11 +72,4 @@ export class MapController {
 
     return asciiMap;
   }
-
-  @Get('admin/test')
-  @ApiOperation({ summary: 'Test endpoint for Map module' })
-  public test(): string {
-    this.logger.log('GET /v1/maps/admin/test');
-    return 'Map module is working';
-  }
 }

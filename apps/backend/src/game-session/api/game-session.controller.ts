@@ -11,20 +11,12 @@ import { GameSessionDto } from './game-session.dto';
 import { CreateGameSessionDto } from './create-game-session.dto';
 import { GameSessionService } from '../domain/game-session.service';
 
-@ApiTags('Game Session')
-@Controller('v1/games')
+@ApiTags('Game Sessions')
+@Controller('v1/sessions')
 export class GameSessionController {
   private readonly logger = new Logger(GameSessionController.name);
 
   constructor(private readonly gameSessionService: GameSessionService) {}
-
-  @Get('admin/test')
-  @ApiOperation({ summary: 'Test endpoint for GameSession module' })
-  public test(): string {
-    this.logger.log('GET /v1/games/admin/test');
-
-    return 'GameSession module is working';
-  }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -44,7 +36,7 @@ export class GameSessionController {
   public async createGameSession(
     @Body() dto: CreateGameSessionDto,
   ): Promise<GameSessionDto> {
-    this.logger.log('POST /v1/games - create game session');
+    this.logger.log('POST /v1/sessions - create game session');
 
     const session = await this.gameSessionService.createGameSession(dto.mapSize, dto.playersCount);
 
@@ -80,7 +72,7 @@ export class GameSessionController {
     @Param('id') sessionId: string,
     @UserId() userId: string,
   ): Promise<void> {
-    this.logger.log(`POST /v1/games/${ sessionId }/players - userId: ${ userId } requests to join`);
+    this.logger.log(`POST /v1/sessions/${ sessionId }/players - userId: ${ userId } requests to join`);
 
     await this.gameSessionService.requestToJoinSession(userId, sessionId);
   }
@@ -109,7 +101,7 @@ export class GameSessionController {
     description: 'Game session not found.',
   })
   public async getGameSession(@Param('id') id: string): Promise<GameSessionDto> {
-    this.logger.log(`GET /v1/games/${ id }`);
+    this.logger.log(`GET /v1/sessions/${ id }`);
 
     const session = await this.gameSessionService.getGameSessionById(id);
 
