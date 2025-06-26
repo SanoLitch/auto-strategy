@@ -6,9 +6,13 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "scripts": {
-    "pipeline:build": "tsc"
+    "pipeline:build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@libs/typescript-config": "workspace:*"
+    "@libs/eslint-config": "workspace:*",
+    "@libs/typescript-config": "workspace:*",
+    "typescript": "^5.8.3"
   }
 }

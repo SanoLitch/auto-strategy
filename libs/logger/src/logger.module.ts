@@ -1,4 +1,6 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import {
+  Module, DynamicModule,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoggerModule as NestjsPinoLoggerModule } from 'nestjs-pino';
 import { safeSerialize } from './safe-serialize';
@@ -20,13 +22,13 @@ export class LoggerModule {
                 level: env === 'production' ? 'info' : 'debug',
                 transport: env !== 'production'
                   ? {
-                      target: 'pino-pretty',
-                      options: {
-                        colorize: true,
-                        translateTime: 'SYS:standard',
-                        ignore: 'pid,hostname',
-                      },
-                    }
+                    target: 'pino-pretty',
+                    options: {
+                      colorize: true,
+                      translateTime: 'SYS:standard',
+                      ignore: 'pid,hostname',
+                    },
+                  }
                   : undefined,
                 serializers: {
                   req: (req: any) => safeSerialize(req),

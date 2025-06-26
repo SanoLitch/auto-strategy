@@ -25,6 +25,7 @@
     "@libs/domain-primitives": "workspace:*",
     "@libs/nest-jwt": "workspace:*",
     "@libs/logger": "workspace:*",
+    "@libs/map-generation": "workspace:*",
     "@libs/typescript-config": "workspace:*",
     "@libs/utils": "workspace:*",
     "@nestjs/common": "^11.1.3",

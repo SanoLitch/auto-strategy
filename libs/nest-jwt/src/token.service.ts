@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { TokenModuleConfig, TokenWithExpiry } from './types';
-
+import {
+  TokenModuleConfig, TokenWithExpiry,
+} from './types';
 
 @Injectable()
 export class TokenService {
@@ -16,7 +17,10 @@ export class TokenService {
     const expiresIn = this.parseExpiresInToMs(expiresInStr);
     const token = this.jwtService.sign(payload);
 
-    return { token, expiresIn };
+    return {
+      token,
+      expiresIn,
+    };
   }
 
   public generateRefreshToken(payload: object): TokenWithExpiry {
@@ -24,7 +28,10 @@ export class TokenService {
     const expiresIn = this.parseExpiresInToMs(expiresInStr);
     const token = this.jwtService.sign(payload, { expiresIn: expiresInStr });
 
-    return { token, expiresIn };
+    return {
+      token,
+      expiresIn,
+    };
   }
 
   private parseExpiresInToMs(expiresIn: string): number {
@@ -32,17 +39,17 @@ export class TokenService {
     const match = expiresIn.match(/^(\d+)([smhd]?)$/);
 
     if (!match) {
-      return Number(expiresIn) * 1000 || 3600 * 1000
+      return Number(expiresIn) * 1000 || 3600 * 1000;
     };
     const value = Number(match[1]);
     const unit = match[2];
 
     switch (unit) {
-      case 's': return value * 1000;
-      case 'm': return value * 60 * 1000;
-      case 'h': return value * 3600 * 1000;
-      case 'd': return value * 86400 * 1000;
-      default: return value * 1000;
+    case 's': return value * 1000;
+    case 'm': return value * 60 * 1000;
+    case 'h': return value * 3600 * 1000;
+    case 'd': return value * 86400 * 1000;
+    default: return value * 1000;
     }
   }
 }

@@ -10,13 +10,13 @@ export class PasswordHash {
   public static async create(password: string): Promise<PasswordHash> {
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(password, salt);
+
     return new PasswordHash(hash);
   }
 
   public async compare(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.value);
   }
-
 
   public getValue(): string {
     return this.value;

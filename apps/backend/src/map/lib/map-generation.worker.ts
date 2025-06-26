@@ -13,8 +13,8 @@ const map = new Map({
   size,
 });
 
-map.generateSpawnPoints(playersCount);
 map.generateTerrainWithResources(playersCount);
+map.generateSpawnPoints(playersCount);
 
 parentPort?.postMessage({
   terrainData: map.terrainData,
