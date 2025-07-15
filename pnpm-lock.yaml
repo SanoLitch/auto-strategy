@@ -251,6 +251,10 @@ importers:
         version: 5.8.3
 
   libs/map-generation:
+    dependencies:
+      '@libs/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@libs/eslint-config':
         specifier: workspace:*

@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@libs/utils": "workspace:*"
+  },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/typescript-config": "workspace:*",

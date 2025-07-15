@@ -1,10 +1,11 @@
 import {
   Uuid, MapSize, SpawnPoint,
 } from '@libs/domain-primitives';
+import { Vector2 } from '@libs/utils';
 import {
   euclideanDistance, distanceFromCenter, maxDistanceFromCenter,
   calculateContiguousProbability, calculateMultiLayerProbabilities, calculateRadialProbability,
-  randomBoolean,
+  randomBoolean, floodFill, FloodFillCallbacks,
 } from '@libs/map-generation';
 
 export enum TerrainType {
@@ -323,97 +324,27 @@ export class Map {
     resourceType: TerrainType,
     config: { radius: number; density: number },
   ): void {
-    // Создаем неразрывную область используя алгоритм заливки с вероятностным расширением
-    const visited = new Set<string>();
-    const queue: Array<{ x: number; y: number; distance: number }> = [];
+    // Создаем callback'и для работы с нашей картой
+    const callbacks: FloodFillCallbacks<TerrainType> = {
+      isInBounds: (position: Vector2) => position.x >= 0 && position.x < this.size.x && position.y >= 0 && position.y < this.size.y,
+      canModify: (position: Vector2) => this.terrainData[position.y][position.x] !== TerrainType.Bedrock,
+      setCell: (position: Vector2, value: TerrainType) => { this.terrainData[position.y][position.x] = value; },
+      getCell: (position: Vector2) => this.terrainData[position.y][position.x],
+    };
 
-    queue.push({
-      x: centerX,
-      y: centerY,
-      distance: 0,
-    });
-    visited.add(`${ centerX },${ centerY }`);
-
-    while (queue.length > 0) {
-      const current = queue.shift()!;
-      const {
-        x, y, distance,
-      } = current;
-
-      // Проверяем границы и возможность размещения
-      if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
-        continue;
-      }
-
-      // Не замещаем Bedrock
-      if (this.terrainData[y][x] === TerrainType.Bedrock) {
-        continue;
-      }
-
-      // Рассчитываем вероятность размещения ресурса
-      const probability = calculateContiguousProbability({
-        distance,
+    // Используем универсальный FloodFill алгоритм
+    floodFill({
+      center: {
+        x: centerX,
+        y: centerY,
+      },
+      value: resourceType,
+      config: {
         radius: config.radius,
-        baseDensity: config.density,
-      });
-
-      if (randomBoolean(probability)) {
-        this.terrainData[y][x] = resourceType;
-
-        // Добавляем соседние клетки в очередь, если расстояние позволяет
-        if (distance < config.radius) {
-          const directions = [
-            {
-              dx: -1,
-              dy: 0,
-            },
-            {
-              dx: 1,
-              dy: 0,
-            },
-            {
-              dx: 0,
-              dy: -1,
-            },
-            {
-              dx: 0,
-              dy: 1,
-            },
-            {
-              dx: -1,
-              dy: -1,
-            },
-            {
-              dx: 1,
-              dy: -1,
-            },
-            {
-              dx: -1,
-              dy: 1,
-            },
-            {
-              dx: 1,
-              dy: 1,
-            },
-          ];
-
-          for (const dir of directions) {
-            const newX = x + dir.dx;
-            const newY = y + dir.dy;
-            const key = `${ newX },${ newY }`;
-
-            if (!visited.has(key)) {
-              visited.add(key);
-              queue.push({
-                x: newX,
-                y: newY,
-                distance: distance + 1,
-              });
-            }
-          }
-        }
-      }
-    }
+        density: config.density,
+      },
+      callbacks,
+    });
   }
 
   private generateTerrainLayers(): void {
