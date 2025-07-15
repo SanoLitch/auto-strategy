@@ -27,41 +27,6 @@
 - **Testability:** Каждый алгоритм легко покрыть unit-тестами
 - **Reusability:** Алгоритмы можно использовать в разных контекстах
 
-### Структура утилитарных классов
-```
-libs/map-generation/
-├── src/
-│   ├── index.ts
-│   ├── terrain/
-│   │   ├── TerrainGenerator.ts          # Базовая генерация террейна
-│   │   ├── BedrockFormationGenerator.ts # Генерация скальных формаций
-│   │   └── TerrainLayerGenerator.ts     # Слоистая структура террейна
-│   ├── resources/
-│   │   ├── ResourcePlacementEngine.ts   # Основной движок размещения ресурсов
-│   │   ├── ZonedResourceStrategy.ts     # Стратегия зонированного размещения
-│   │   ├── ContiguousClusterGenerator.ts # Генерация связных кластеров
-│   │   └── ResourceBalancer.ts          # Балансировка ресурсов
-│   ├── spawn/
-│   │   ├── SpawnPointGenerator.ts       # Генерация точек спавна
-│   │   ├── SpawnPositionCalculator.ts   # Расчет позиций спавна
-│   │   └── SpawnAccessibilityEnsurer.ts # Обеспечение доступности спавна
-│   ├── validation/
-│   │   ├── MapValidator.ts              # Валидация готовой карты
-│   │   └── TerrainValidator.ts          # Валидация террейна
-│   ├── utils/
-│   │   ├── GeometryUtils.ts             # Геометрические утилиты
-│   │   ├── NoiseGenerator.ts            # Генерация шума/случайности
-│   │   └── DistanceCalculator.ts        # Расчеты расстояний
-│   └── types/
-│       ├── GenerationConfig.ts          # Конфигурация генерации
-│       ├── TerrainTypes.ts              # Типы террейна
-│       └── index.ts
-├── package.json
-└── tsconfig.json
-```
-
----
-
 ## 📅 План рефакторинга
 
 ### **Phase 1: Создание библиотеки и базовых утилит** ⏱️ 1-2 недели

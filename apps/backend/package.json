@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@libs/domain-primitives": "workspace:*",
+    "@libs/map-generation": "workspace:*",
     "@libs/nest-jwt": "workspace:*",
     "@libs/logger": "workspace:*",
     "@libs/typescript-config": "workspace:*",

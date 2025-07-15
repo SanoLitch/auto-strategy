@@ -1,0 +1,19 @@
+{
+  "name": "@libs/map-generation",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "scripts": {
+    "pipeline:build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
+    "@libs/typescript-config": "workspace:*",
+    "typescript": "^5.8.3"
+  }
+}

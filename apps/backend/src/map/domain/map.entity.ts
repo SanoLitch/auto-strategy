@@ -1,6 +1,9 @@
 import {
   Uuid, MapSize, SpawnPoint,
 } from '@libs/domain-primitives';
+import {
+  euclideanDistance, distanceFromCenter, maxDistanceFromCenter,
+} from '@libs/map-generation';
 
 export enum TerrainType {
   Dirt = 'Dirt',
@@ -50,11 +53,11 @@ export class Map {
     const mapArea = this.size.x * this.size.y;
     const centerX = Math.floor(this.size.x / 2);
     const centerY = Math.floor(this.size.y / 2);
-    const maxDistanceFromCenter = Math.sqrt(centerX * centerX + centerY * centerY);
+    const maxDistanceToCorner = maxDistanceFromCenter(this.size.x, this.size.y);
 
     // Определение зон карты
-    const centralZoneRadius = maxDistanceFromCenter * 0.4; // 40% от края до центра
-    const middleZoneRadius = maxDistanceFromCenter * 0.7; // 70% от края до центра
+    const centralZoneRadius = maxDistanceToCorner * 0.4; // 40% от края до центра
+    const middleZoneRadius = maxDistanceToCorner * 0.7; // 70% от края до центра
 
     // Расчет базового количества ресурсов
     const baseResourceDensity = 0.025; // Немного меньше для более качественных кластеров
@@ -76,7 +79,7 @@ export class Map {
         centerY,
         centralZoneRadius,
         middleZoneRadius,
-        maxDistance: maxDistanceFromCenter,
+        maxDistance: maxDistanceToCorner,
       },
     );
   }
@@ -284,7 +287,7 @@ export class Map {
       // Проверяем расстояние от спавнов
       const tooCloseToSpawn = this.spawnPoints.some(spawnPoint => {
         const spawn = spawnPoint.toJSON();
-        const distanceToSpawn = Math.sqrt(Math.pow(x - spawn.x, 2) + Math.pow(y - spawn.y, 2));
+        const distanceToSpawn = euclideanDistance(x, y, spawn.x, spawn.y);
 
         return distanceToSpawn < spawnProtectedZone;
       });
@@ -295,7 +298,7 @@ export class Map {
 
       // Проверяем расстояние от других кластеров
       const conflictingCluster = placedClusters.find(cluster => {
-        const distanceToCluster = Math.sqrt(Math.pow(x - cluster.x, 2) + Math.pow(y - cluster.y, 2));
+        const distanceToCluster = euclideanDistance(x, y, cluster.x, cluster.y);
         const requiredDistance = cluster.type === resourceType ? minDistance : minDistance * 1.5;
 
         return distanceToCluster < requiredDistance;
@@ -423,14 +426,10 @@ export class Map {
 
     for (let y = 0; y < this.size.y; y++) {
       for (let x = 0; x < this.size.x; x++) {
-        const distanceFromCenter = Math.sqrt(
-          Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2),
-        );
-        const maxDistance = Math.sqrt(
-          Math.pow(centerX, 2) + Math.pow(centerY, 2),
-        );
+        const currentDistanceFromCenter = distanceFromCenter(x, y, centerX, centerY);
+        const maxDistance = maxDistanceFromCenter(this.size.x, this.size.y);
 
-        const normalizedDistance = distanceFromCenter / maxDistance;
+        const normalizedDistance = currentDistanceFromCenter / maxDistance;
 
         const rockProbability = normalizedDistance * 0.4;
         const bedrockProbability = (1 - normalizedDistance) * 0.15;
@@ -460,7 +459,7 @@ export class Map {
           const y = centerY + dy;
 
           if (x >= 0 && x < this.size.x && y >= 0 && y < this.size.y) {
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distance = euclideanDistance(0, 0, dx, dy);
             const probability = Math.max(0, 1 - distance / radius);
 
             if (Math.random() < probability * 0.8) {
@@ -519,7 +518,7 @@ export class Map {
           const y = spawnY + dy;
 
           if (x >= 0 && x < this.size.x && y >= 0 && y < this.size.y) {
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distance = euclideanDistance(0, 0, dx, dy);
 
             if (distance <= immediateRadius) {
               // Ближайшая зона - сразу свободна для строительства
@@ -697,7 +696,7 @@ export class Map {
           const y = spawnY + dy;
 
           if (x >= 0 && x < this.size.x && y >= 0 && y < this.size.y) {
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distance = euclideanDistance(0, 0, dx, dy);
 
             if (distance <= immediateRadius) {
               this.terrainData[y][x] = TerrainType.Empty;
