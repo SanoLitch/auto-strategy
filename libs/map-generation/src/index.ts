@@ -46,6 +46,16 @@ export {
   type PlacementResult,
 } from './algorithms/placement.algorithm';
 
+// Formation algorithm
+export {
+  generateLinearFormations,
+  generateLinearFormationsOnGrid,
+  type LinearFormationConfig,
+  type FormationCallbacks,
+  type FormationGenerationConfig,
+  type FormationResult,
+} from './algorithms/formation.algorithm';
+
 // Grid types
 export {
   type GridCell,

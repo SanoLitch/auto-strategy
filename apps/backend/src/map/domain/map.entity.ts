@@ -7,6 +7,7 @@ import {
   calculateMultiLayerProbabilities, calculateRadialProbability,
   randomBoolean, floodFill, FloodFillCallbacks,
   findValidPosition, createExclusionZones,
+  generateLinearFormationsOnGrid, type LinearFormationConfig,
   type PlacementZone, type PlacementObject,
   type ExclusionZone, type PlacementCallbacks,
 } from '@libs/map-generation';
@@ -417,37 +418,24 @@ export class Map {
   }
 
   private addRockVariations(): void {
-    const veinCount = Math.floor((this.size.x * this.size.y) / 400); // ~1 жила на 400 клеток
+    // Конфигурация для генерации каменных жил
+    const formationConfig: LinearFormationConfig = {
+      density: 2.5, // ~2.5 жилы на 1000 клеток (было ~1 жила на 400 клеток)
+      minLength: 5,
+      maxLength: 15,
+      minThickness: 1,
+      maxThickness: 3,
+      noiseAmount: 1.0,
+      placementProbability: 0.7,
+    };
 
-    for (let i = 0; i < veinCount; i++) {
-      const startX = Math.floor(Math.random() * this.size.x);
-      const startY = Math.floor(Math.random() * this.size.y);
-      const length = 5 + Math.floor(Math.random() * 10);
-      const direction = Math.random() * 2 * Math.PI;
-
-      for (let j = 0; j < length; j++) {
-        const x = Math.floor(startX + Math.cos(direction) * j);
-        const y = Math.floor(startY + Math.sin(direction) * j);
-
-        if (x >= 0 && x < this.size.x && y >= 0 && y < this.size.y) {
-          const noise = (Math.random() - 0.5) * 2;
-          const thickness = 1 + Math.floor(Math.random() * 2);
-
-          for (let dy = -thickness; dy <= thickness; dy++) {
-            for (let dx = -thickness; dx <= thickness; dx++) {
-              const nx = x + dx + Math.floor(noise);
-              const ny = y + dy + Math.floor(noise);
-
-              if (nx >= 0 && nx < this.size.x && ny >= 0 && ny < this.size.y) {
-                if (this.terrainData[ny][nx] === TerrainType.Dirt && Math.random() < 0.7) {
-                  this.terrainData[ny][nx] = TerrainType.Rock;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    // Используем универсальный алгоритм генерации формаций
+    generateLinearFormationsOnGrid(
+      this.terrainData,
+      formationConfig,
+      TerrainType.Rock,
+      (x, y, currentValue, newValue) => currentValue === TerrainType.Dirt,
+    );
   }
 
   private ensureSpawnAccessibility(): void {
