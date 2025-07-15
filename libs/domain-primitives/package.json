@@ -6,15 +6,19 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "scripts": {
-    "pipeline:build": "tsc"
+    "pipeline:build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@libs/utils": "workspace:*",
     "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
     "@libs/typescript-config": "workspace:*",
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^24.0.3"
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3"
   }
 }

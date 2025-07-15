@@ -9,8 +9,8 @@ export type DomainExceptionConstructor = new (...args: any[]) => DomainException
 export function isDomainExceptionConstructor(
   ctor: unknown,
 ): ctor is DomainExceptionConstructor {
-  return typeof ctor === 'function' &&
-      new (ctor as DomainExceptionConstructor)() instanceof DomainException;
+  return typeof ctor === 'function'
+    && new (ctor as DomainExceptionConstructor)() instanceof DomainException;
 }
 
 export class DomainException extends Error {
