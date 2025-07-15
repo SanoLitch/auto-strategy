@@ -4,8 +4,11 @@ import {
 import { Vector2 } from '@libs/utils';
 import {
   euclideanDistance, distanceFromCenter, maxDistanceFromCenter,
-  calculateContiguousProbability, calculateMultiLayerProbabilities, calculateRadialProbability,
+  calculateMultiLayerProbabilities, calculateRadialProbability,
   randomBoolean, floodFill, FloodFillCallbacks,
+  findValidPosition, createExclusionZones,
+  type PlacementZone, type PlacementObject,
+  type ExclusionZone, type PlacementCallbacks,
 } from '@libs/map-generation';
 
 export enum TerrainType {
@@ -272,50 +275,49 @@ export class Map {
     minDistance: number,
     resourceType: TerrainType,
   ): { x: number; y: number } | null {
-    const spawnProtectedZone = 12; // Защищенная зона вокруг спавна
+    // Создаем зону размещения
+    const zone: PlacementZone = {
+      center: {
+        x: centerX,
+        y: centerY,
+      },
+      minRadius,
+      maxRadius,
+    };
 
-    for (let attempt = 0; attempt < 200; attempt++) {
-      // Генерируем случайную позицию в кольце
-      const angle = Math.random() * 2 * Math.PI;
-      const distance = minRadius + Math.random() * (maxRadius - minRadius);
+    // Конвертируем существующие кластеры в формат PlacementObject
+    const existingObjects: PlacementObject[] = placedClusters.map(cluster => ({
+      position: {
+        x: cluster.x,
+        y: cluster.y,
+      },
+      type: cluster.type,
+      radius: cluster.radius,
+    }));
 
-      const x = Math.floor(centerX + Math.cos(angle) * distance);
-      const y = Math.floor(centerY + Math.sin(angle) * distance);
+    // Создаем зоны исключения для спавнов
+    const spawnPoints = this.spawnPoints.map(sp => sp.toJSON());
+    const exclusionZones: ExclusionZone[] = createExclusionZones(spawnPoints, 12);
 
-      // Проверяем границы карты
-      if (x < 5 || x >= this.size.x - 5 || y < 5 || y >= this.size.y - 5) {
-        continue;
-      }
+    // Создаем callbacks для проверки границ
+    const callbacks: PlacementCallbacks = {
+      isInBounds: (position: Vector2) =>
+        position.x >= 0 && position.x < this.size.x && position.y >= 0 && position.y < this.size.y,
+    };
 
-      // Проверяем расстояние от спавнов
-      const tooCloseToSpawn = this.spawnPoints.some(spawnPoint => {
-        const spawn = spawnPoint.toJSON();
-        const distanceToSpawn = euclideanDistance(x, y, spawn.x, spawn.y);
+    // Используем универсальный алгоритм размещения
+    const result = findValidPosition({
+      zone,
+      objectType: resourceType,
+      existingObjects,
+      exclusionZones,
+      minDistance,
+      differentTypeDistanceMultiplier: 1.5,
+      edgeMargin: 5,
+      maxAttempts: 200,
+    }, callbacks);
 
-        return distanceToSpawn < spawnProtectedZone;
-      });
-
-      if (tooCloseToSpawn) {
-        continue;
-      }
-
-      // Проверяем расстояние от других кластеров
-      const conflictingCluster = placedClusters.find(cluster => {
-        const distanceToCluster = euclideanDistance(x, y, cluster.x, cluster.y);
-        const requiredDistance = cluster.type === resourceType ? minDistance : minDistance * 1.5;
-
-        return distanceToCluster < requiredDistance;
-      });
-
-      if (!conflictingCluster) {
-        return {
-          x,
-          y,
-        };
-      }
-    }
-
-    return null;
+    return result.success ? result.position : null;
   }
 
   private generateContiguousResourceCluster(
@@ -326,7 +328,8 @@ export class Map {
   ): void {
     // Создаем callback'и для работы с нашей картой
     const callbacks: FloodFillCallbacks<TerrainType> = {
-      isInBounds: (position: Vector2) => position.x >= 0 && position.x < this.size.x && position.y >= 0 && position.y < this.size.y,
+      isInBounds: (position: Vector2) =>
+        position.x >= 0 && position.x < this.size.x && position.y >= 0 && position.y < this.size.y,
       canModify: (position: Vector2) => this.terrainData[position.y][position.x] !== TerrainType.Bedrock,
       setCell: (position: Vector2, value: TerrainType) => { this.terrainData[position.y][position.x] = value; },
       getCell: (position: Vector2) => this.terrainData[position.y][position.x],
