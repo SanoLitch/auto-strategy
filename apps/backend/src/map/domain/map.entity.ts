@@ -3,6 +3,8 @@ import {
 } from '@libs/domain-primitives';
 import {
   euclideanDistance, distanceFromCenter, maxDistanceFromCenter,
+  calculateContiguousProbability, calculateMultiLayerProbabilities, calculateRadialProbability,
+  randomBoolean,
 } from '@libs/map-generation';
 
 export enum TerrainType {
@@ -349,9 +351,13 @@ export class Map {
       }
 
       // Рассчитываем вероятность размещения ресурса
-      const probability = this.calculateContiguousProbability(distance, config.radius, config.density);
+      const probability = calculateContiguousProbability({
+        distance,
+        radius: config.radius,
+        baseDensity: config.density,
+      });
 
-      if (Math.random() < probability) {
+      if (randomBoolean(probability)) {
         this.terrainData[y][x] = resourceType;
 
         // Добавляем соседние клетки в очередь, если расстояние позволяет
@@ -410,16 +416,6 @@ export class Map {
     }
   }
 
-  private calculateContiguousProbability(distance: number, radius: number, baseDensity: number): number {
-    if (distance === 0) return 1.0; // Центр всегда заполнен
-
-    const normalizedDistance = distance / radius;
-    const falloff = 1 - Math.pow(normalizedDistance, 0.8); // Более плавный спад
-    const noise = (Math.random() - 0.5) * 0.1; // Меньше шума для более связных областей
-
-    return Math.max(0, Math.min(1, baseDensity * falloff + noise));
-  }
-
   private generateTerrainLayers(): void {
     const centerX = Math.floor(this.size.x / 2);
     const centerY = Math.floor(this.size.y / 2);
@@ -431,8 +427,20 @@ export class Map {
 
         const normalizedDistance = currentDistanceFromCenter / maxDistance;
 
-        const rockProbability = normalizedDistance * 0.4;
-        const bedrockProbability = (1 - normalizedDistance) * 0.15;
+        // Конфигурация слоев террейна (бизнес-логика)
+        const [rockProbability, bedrockProbability] = calculateMultiLayerProbabilities({
+          normalizedDistance,
+          layers: [
+            {
+              multiplier: 0.4,
+              invertDistance: false,
+            }, // Rock: увеличивается с расстоянием
+            {
+              multiplier: 0.15,
+              invertDistance: true,
+            }, // Bedrock: уменьшается с расстоянием
+          ],
+        });
 
         const random = Math.random();
 
@@ -460,9 +468,12 @@ export class Map {
 
           if (x >= 0 && x < this.size.x && y >= 0 && y < this.size.y) {
             const distance = euclideanDistance(0, 0, dx, dy);
-            const probability = Math.max(0, 1 - distance / radius);
+            const probability = calculateRadialProbability({
+              distance,
+              radius,
+            });
 
-            if (Math.random() < probability * 0.8) {
+            if (randomBoolean(probability)) {
               this.terrainData[y][x] = TerrainType.Bedrock;
             }
           }
