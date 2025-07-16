@@ -30,16 +30,40 @@ export interface FloodFillCallbacks<T = any> {
 
 // Standard direction patterns
 export const DIRECTIONS_4: Vector2[] = [
-  { x: -1, y: 0 },  // Left
-  { x: 1, y: 0 },   // Right
-  { x: 0, y: -1 },  // Up
-  { x: 0, y: 1 },   // Down
+  {
+    x: -1,
+    y: 0,
+  }, // Left
+  {
+    x: 1,
+    y: 0,
+  }, // Right
+  {
+    x: 0,
+    y: -1,
+  }, // Up
+  {
+    x: 0,
+    y: 1,
+  }, // Down
 ];
 
 export const DIRECTIONS_8: Vector2[] = [
   ...DIRECTIONS_4,
-  { x: -1, y: -1 }, // Top-left
-  { x: 1, y: -1 },  // Top-right
-  { x: -1, y: 1 },  // Bottom-left
-  { x: 1, y: 1 },   // Bottom-right
+  {
+    x: -1,
+    y: -1,
+  }, // Top-left
+  {
+    x: 1,
+    y: -1,
+  }, // Top-right
+  {
+    x: -1,
+    y: 1,
+  }, // Bottom-left
+  {
+    x: 1,
+    y: 1,
+  }, // Bottom-right
 ];

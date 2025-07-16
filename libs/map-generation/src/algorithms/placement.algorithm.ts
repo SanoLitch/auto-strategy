@@ -96,8 +96,14 @@ export function findValidPosition(
     }
 
     // Check edge margins
-    if (!callbacks.isInBounds({ x: position.x - edgeMargin, y: position.y - edgeMargin }) ||
-        !callbacks.isInBounds({ x: position.x + edgeMargin, y: position.y + edgeMargin })) {
+    if (!callbacks.isInBounds({
+      x: position.x - edgeMargin,
+      y: position.y - edgeMargin,
+    })
+    || !callbacks.isInBounds({
+      x: position.x + edgeMargin,
+      y: position.y + edgeMargin,
+    })) {
       continue;
     }
 
@@ -109,6 +115,7 @@ export function findValidPosition(
         exclusionZone.center.x,
         exclusionZone.center.y,
       );
+
       return distanceToZone < exclusionZone.radius;
     });
 

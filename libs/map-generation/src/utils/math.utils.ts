@@ -4,7 +4,7 @@ export function euclideanDistance(x1: number, y1: number, x2: number, y2: number
 
 export function normalizedDistance(distance: number, maxDistance: number): number {
   if (maxDistance === 0) {
-    return 0
+    return 0;
   };
   return Math.min(1, Math.max(0, distance / maxDistance));
 }

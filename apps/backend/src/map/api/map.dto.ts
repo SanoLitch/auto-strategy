@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsUUID, IsObject, IsArray, IsEnum,
 } from 'class-validator';
-import { TerrainType } from '../domain/map.entity';
+import { TerrainType } from '../domain/types';
 
 class MapSizeDto {
   @ApiProperty({

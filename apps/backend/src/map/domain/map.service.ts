@@ -6,9 +6,7 @@ import {
 } from '@nestjs/event-emitter';
 import { type Vector2 } from '@libs/utils';
 import { Worker } from 'worker_threads';
-import {
-  TerrainType,
-} from './map.entity';
+import { TerrainType } from './types';
 import { MapRepository } from '../db/map.repository';
 import { MapDto } from '../api/map.dto';
 import { MapMapper } from '../lib/map.mapper';
@@ -33,10 +31,12 @@ export class MapService {
       sessionId, playersCount, size,
     } = payload;
 
-    this.logger.log(`Handle map.generate event:
-    sessionId=${ sessionId },
-    size=${ JSON.stringify(size) },
-    playersCount=${ playersCount }`);
+    this.logger.log(`
+      Handle map.generate event:
+      sessionId=${ sessionId },
+      size=${ JSON.stringify(size) },
+      playersCount=${ playersCount }
+    `);
 
     const worker = new Worker(
       require.resolve('../lib/map-generation.worker'),

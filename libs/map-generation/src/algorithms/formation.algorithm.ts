@@ -54,7 +54,9 @@ export interface FormationResult {
 export function generateLinearFormations<T>(
   config: FormationGenerationConfig<T>,
 ): FormationResult {
-  const { areaSize, formationConfig, elementValue, callbacks } = config;
+  const {
+    areaSize, formationConfig, elementValue, callbacks,
+  } = config;
 
   // Calculate number of formations based on area and density
   const totalArea = areaSize.x * areaSize.y;
@@ -88,7 +90,9 @@ export function generateLinearFormations<T>(
 function generateSingleFormation<T>(
   config: FormationGenerationConfig<T>,
 ): FormationResult {
-  const { areaSize, formationConfig, elementValue, callbacks } = config;
+  const {
+    areaSize, formationConfig, elementValue, callbacks,
+  } = config;
 
   // Generate random start position
   const startPosition: Vector2 = {
@@ -100,8 +104,8 @@ function generateSingleFormation<T>(
   const direction = Math.random() * 2 * Math.PI;
 
   // Generate random length
-  const length = formationConfig.minLength +
-    Math.floor(Math.random() * (formationConfig.maxLength - formationConfig.minLength + 1));
+  const length = formationConfig.minLength
+    + Math.floor(Math.random() * (formationConfig.maxLength - formationConfig.minLength + 1));
 
   let elementsPlaced = 0;
   let attemptedPlacements = 0;
@@ -119,8 +123,8 @@ function generateSingleFormation<T>(
     }
 
     // Generate random thickness for this segment
-    const thickness = formationConfig.minThickness +
-      Math.floor(Math.random() * (formationConfig.maxThickness - formationConfig.minThickness + 1));
+    const thickness = formationConfig.minThickness
+      + Math.floor(Math.random() * (formationConfig.maxThickness - formationConfig.minThickness + 1));
 
     // Generate noise offset
     const noiseX = (Math.random() - 0.5) * 2 * formationConfig.noiseAmount;
@@ -178,7 +182,7 @@ export function generateLinearFormationsOnGrid<T>(
   const width = height > 0 ? grid[0].length : 0;
 
   const callbacks: FormationCallbacks<T> = {
-    isInBounds: (position) =>
+    isInBounds: position =>
       position.x >= 0 && position.x < width && position.y >= 0 && position.y < height,
     canPlace: (position, value) =>
       canPlacePredicate(position.x, position.y, grid[position.y][position.x], value),
@@ -188,7 +192,10 @@ export function generateLinearFormationsOnGrid<T>(
   };
 
   return generateLinearFormations({
-    areaSize: { x: width, y: height },
+    areaSize: {
+      x: width,
+      y: height,
+    },
     formationConfig: config,
     elementValue,
     callbacks,

@@ -12,6 +12,7 @@ export function clamp(value: number, min: number = 0, max: number = 1): number {
 
 export function smoothstep(edge0: number, edge1: number, x: number): number {
   const t = clamp((x - edge0) / (edge1 - edge0));
+
   return t * t * (3 - 2 * t);
 }
 

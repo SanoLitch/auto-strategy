@@ -2,9 +2,8 @@ import { Map as MapDb } from '@prisma/client';
 import {
   MapSize, Uuid, SpawnPoint,
 } from '@libs/domain-primitives';
-import {
-  Map, TerrainType,
-} from '../domain/map.entity';
+import { Map } from '../domain/map.entity';
+import { TerrainType } from '../domain/types';
 import { MapDto } from '../api/map.dto';
 
 export class MapMapper {

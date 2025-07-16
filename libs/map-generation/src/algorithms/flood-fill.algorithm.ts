@@ -69,15 +69,20 @@ export function floodFill(options: FloodFillOptions): FloodFillResult {
     y: center.y,
     distance: 0,
   });
-  visited.add(`${center.x},${center.y}`);
+  visited.add(`${ center.x },${ center.y }`);
 
   while (queue.length > 0 && cellsProcessed < maxCells) {
     const current = queue.shift()!;
-    const { x, y, distance } = current;
+    const {
+      x, y, distance,
+    } = current;
 
     cellsProcessed++;
 
-    const position = { x, y };
+    const position = {
+      x,
+      y,
+    };
 
     // Check bounds
     if (!callbacks.isInBounds(position)) {
@@ -101,7 +106,10 @@ export function floodFill(options: FloodFillOptions): FloodFillResult {
     // Apply probabilistic placement
     if (randomBoolean(probability)) {
       callbacks.setCell(position, value);
-      modifiedPoints.push({ x, y });
+      modifiedPoints.push({
+        x,
+        y,
+      });
       cellsModified++;
 
       // Add neighbors to queue if within radius
@@ -109,7 +117,7 @@ export function floodFill(options: FloodFillOptions): FloodFillResult {
         for (const direction of directions) {
           const newX = x + direction.x;
           const newY = y + direction.y;
-          const key = `${newX},${newY}`;
+          const key = `${ newX },${ newY }`;
 
           if (!visited.has(key)) {
             visited.add(key);
@@ -151,10 +159,10 @@ export function floodFillGrid<T>(
   const width = height > 0 ? grid[0].length : 0;
 
   const callbacks: FloodFillCallbacks<T> = {
-    isInBounds: (position) => position.x >= 0 && position.x < width && position.y >= 0 && position.y < height,
-    canModify: (position) => canModifyPredicate(position.x, position.y, grid[position.y][position.x]),
+    isInBounds: position => position.x >= 0 && position.x < width && position.y >= 0 && position.y < height,
+    canModify: position => canModifyPredicate(position.x, position.y, grid[position.y][position.x]),
     setCell: (position, val) => { grid[position.y][position.x] = val; },
-    getCell: (position) => grid[position.y][position.x],
+    getCell: position => grid[position.y][position.x],
   };
 
   return floodFill({
