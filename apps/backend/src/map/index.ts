@@ -3,4 +3,8 @@ export * from './api/map.dto';
 export * from './db/map.repository';
 export * from './domain/map.entity';
 export * from './domain/map.service';
+export * from './domain/resource-generator.service';
+export * from './domain/resource-generation.rules';
+export * from './domain/types';
 export * from './lib/map.mapper';
+export * from './lib/terrain-grid.adapter';

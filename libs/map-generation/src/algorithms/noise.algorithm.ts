@@ -1,6 +1,6 @@
 import {
   clamp, randomFloat,
-} from '../utils/noise.utils';
+} from '@libs/utils';
 
 export interface ContiguousProbabilityConfig {
   distance: number;

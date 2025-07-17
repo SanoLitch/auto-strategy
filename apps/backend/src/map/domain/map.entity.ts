@@ -3,8 +3,10 @@ import {
 } from '@libs/domain-primitives';
 import { MapTerrainGenerator } from './terrain-generator.service';
 import {
-  MapResourceGenerator, ResourceGenerationConfig,
+  MapResourceGenerator,
+  ResourceGenerationParams,
 } from './resource-generator.service';
+import { ResourceGenerationConfig } from './resource-generation.rules';
 import { MapSpawnGenerator } from './spawn-generator.service';
 import { TerrainType } from './types';
 
@@ -46,18 +48,17 @@ export class Map {
     config?: Partial<ResourceGenerationConfig>,
   ): void {
     this.generateTerrain();
-    this.resourceGenerator.generateZonedResourceDeposits(
-      this.terrainData,
-      this.spawnPoints,
-      this.size,
+
+    const resourceParams: ResourceGenerationParams = {
+      terrainData: this.terrainData,
+      spawnPoints: this.spawnPoints,
+      size: this.size,
       playersCount,
       config,
-    );
-    this.resourceGenerator.placeGuaranteedSpawnResources(
-      this.terrainData,
-      this.spawnPoints,
-      this.size,
-    );
+    };
+
+    this.resourceGenerator.generateZonedResourceDeposits(resourceParams);
+    this.resourceGenerator.placeGuaranteedSpawnResources(resourceParams);
   }
 
   public generateSpawnPoints(playersCount: number): void {
@@ -86,7 +87,6 @@ export class Map {
     if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
       return false;
     }
-
     const terrain = this.terrainData[y][x];
 
     return terrain === TerrainType.Empty;

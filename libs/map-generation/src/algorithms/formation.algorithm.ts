@@ -1,5 +1,5 @@
 import { Vector2 } from '@libs/utils';
-import { randomFloat } from '../utils/noise.utils';
+import { randomFloat } from '@libs/utils';
 
 export interface LinearFormationConfig {
   /** Density of formations per area unit (formations per 1000 cells) */

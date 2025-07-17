@@ -4,8 +4,9 @@ import {
 
 export class MapSpawnGenerator {
   public calculateSpawnPoints(size: MapSize, playersCount: number): SpawnPoint[] {
-    if (playersCount === 0) return [];
-
+    if (playersCount === 0) {
+      return [];
+    }
     const margin = 10;
     const minDistance = Math.min(size.x, size.y) / 3;
 
@@ -17,8 +18,7 @@ export class MapSpawnGenerator {
         ),
       ];
     }
-
-    const positions = this.calculateSpawnPositions(size, playersCount, margin, minDistance);
+    const positions = this.calculateSpawnPositions(size, playersCount, margin);
 
     return positions.map(pos => new SpawnPoint(pos.x, pos.y));
   }
@@ -27,7 +27,6 @@ export class MapSpawnGenerator {
     size: MapSize,
     playersCount: number,
     margin: number,
-    minDistance: number,
   ): Array<{ x: number; y: number }> {
     const positions: Array<{ x: number; y: number }> = [];
 
@@ -59,7 +58,7 @@ export class MapSpawnGenerator {
     } else {
       positions.push(...cornerPositions);
       const additionalCount = playersCount - 4;
-      const edgePositions = this.generateEdgePositions(size, additionalCount, margin, minDistance);
+      const edgePositions = this.generateEdgePositions(size, additionalCount, margin);
 
       positions.push(...edgePositions);
     }
@@ -71,7 +70,6 @@ export class MapSpawnGenerator {
     size: MapSize,
     count: number,
     margin: number,
-    minDistance: number,
   ): Array<{ x: number; y: number }> {
     const positions: Array<{ x: number; y: number }> = [];
 

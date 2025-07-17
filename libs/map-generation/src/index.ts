@@ -1,32 +1,9 @@
-/**
- * Map generation algorithms and utilities
- */
-
-// Math utilities
-export {
-  euclideanDistance,
-  distanceFromCenter,
-  maxDistanceFromCenter,
-  normalizedDistance,
-} from './utils/math.utils';
-
-// Noise utilities
-export {
-  randomFloat,
-  randomBoolean,
-  clamp,
-  smoothstep,
-  lerp,
-} from './utils/noise.utils';
-
-// Noise algorithms
 export {
   calculateContiguousProbability,
   calculateMultiLayerProbabilities,
   calculateRadialProbability,
 } from './algorithms/noise.algorithm';
 
-// Flood fill algorithm
 export {
   floodFill,
   floodFillGrid,
@@ -34,7 +11,6 @@ export {
   type FloodFillResult,
 } from './algorithms/flood-fill.algorithm';
 
-// Placement algorithm
 export {
   findValidPosition,
   createExclusionZones,
@@ -46,7 +22,6 @@ export {
   type PlacementResult,
 } from './algorithms/placement.algorithm';
 
-// Formation algorithm
 export {
   generateLinearFormations,
   generateLinearFormationsOnGrid,
@@ -56,7 +31,6 @@ export {
   type FormationResult,
 } from './algorithms/formation.algorithm';
 
-// Grid types
 export {
   type GridCell,
   type FloodFillConfig,

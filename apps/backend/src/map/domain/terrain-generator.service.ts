@@ -5,9 +5,11 @@ import {
   euclideanDistance,
   distanceFromCenter,
   maxDistanceFromCenter,
+  randomBoolean,
+} from '@libs/utils';
+import {
   calculateMultiLayerProbabilities,
   calculateRadialProbability,
-  randomBoolean,
   generateLinearFormationsOnGrid,
   type LinearFormationConfig,
 } from '@libs/map-generation';
@@ -20,7 +22,7 @@ export class MapTerrainGenerator {
 
     this.generateTerrainLayers(terrainData, size);
     this.generateBedrockFormations(terrainData, size);
-    this.addRockVariations(terrainData, size);
+    this.addRockVariations(terrainData);
 
     return terrainData;
   }
@@ -101,7 +103,7 @@ export class MapTerrainGenerator {
     }
   }
 
-  private addRockVariations(terrainData: TerrainType[][], size: MapSize): void {
+  private addRockVariations(terrainData: TerrainType[][]): void {
     const formationConfig: LinearFormationConfig = {
       density: 2.5,
       minLength: 5,

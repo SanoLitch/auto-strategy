@@ -1,6 +1,6 @@
 import { Vector2 } from '@libs/utils';
+import { randomBoolean } from '@libs/utils';
 import { calculateContiguousProbability } from './noise.algorithm';
-import { randomBoolean } from '../utils/noise.utils';
 import {
   GridCell,
   FloodFillConfig,

@@ -1,5 +1,5 @@
 import { Vector2 } from '@libs/utils';
-import { euclideanDistance } from '../utils/math.utils';
+import { euclideanDistance } from '@libs/utils';
 
 export interface PlacementZone {
   /** Center of the zone */
