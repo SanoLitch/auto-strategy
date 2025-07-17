@@ -1,6 +1,5 @@
 import { Vector2 } from '@libs/utils';
 
-// Существующие типы
 export enum TerrainType {
   Dirt = 'Dirt',
   Rock = 'Rock',
@@ -11,12 +10,10 @@ export enum TerrainType {
   IronCluster = 'IronCluster',
 }
 
-// === VALUE OBJECTS ДЛЯ ГЕНЕРАЦИИ РЕСУРСОВ ===
-
 export enum ZoneType {
-  Central = 'central',
-  Middle = 'middle',
-  Outer = 'outer',
+  Central = 'Central',
+  Middle = 'Middle',
+  Outer = 'Outer',
 }
 
 export enum ResourceType {

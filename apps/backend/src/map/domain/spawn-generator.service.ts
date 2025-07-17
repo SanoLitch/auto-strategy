@@ -8,7 +8,6 @@ export class MapSpawnGenerator {
       return [];
     }
     const margin = 10;
-    const minDistance = Math.min(size.x, size.y) / 3;
 
     if (playersCount === 1) {
       return [
